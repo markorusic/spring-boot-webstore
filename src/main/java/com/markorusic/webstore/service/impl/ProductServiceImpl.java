@@ -1,8 +1,9 @@
-package com.markorusic.webstore.service;
+package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.ProductRequestDto;
+import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;

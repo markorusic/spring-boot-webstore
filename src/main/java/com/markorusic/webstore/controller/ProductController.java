@@ -4,7 +4,7 @@ import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.ProductRequestDto;
 import com.markorusic.webstore.service.ProductService;
-import com.markorusic.webstore.util.exception.ValidationGroup;
+import com.markorusic.webstore.util.ValidationGroup;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

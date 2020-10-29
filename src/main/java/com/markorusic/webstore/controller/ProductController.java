@@ -3,6 +3,7 @@ package com.markorusic.webstore.controller;
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.ProductRequestDto;
+import com.markorusic.webstore.dto.ProductResponseDto;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.ValidationGroup;
 import com.querydsl.core.types.Predicate;
@@ -33,7 +34,7 @@ public class ProductController {
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     @ApiOperation(value = "Method for search single product with all details by id")
-    public Product findById(@RequestParam Long id) {
+    public ProductResponseDto findById(@RequestParam Long id) {
         return productService.findById(id);
     }
 

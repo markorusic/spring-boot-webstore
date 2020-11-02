@@ -1,20 +1,19 @@
 package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Product;
+import com.markorusic.webstore.dto.ProductPageDto;
 import com.markorusic.webstore.dto.ProductRequestDto;
-import com.markorusic.webstore.dto.ProductResponseDto;
+import com.markorusic.webstore.dto.ProductDto;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface ProductService {
-    Page<Product> findAll(Predicate predicate, Pageable pageable);
+    Page<ProductPageDto> findAll(Predicate predicate, Pageable pageable);
 
-    ProductResponseDto findById(Long id);
+    ProductDto findById(Long id);
 
-    Product save(ProductRequestDto productRequestDto);
+    ProductDto save(ProductRequestDto productRequestDto);
 
-    Product update(ProductRequestDto productRequestDto);
+    ProductDto update(ProductRequestDto productRequestDto);
 }

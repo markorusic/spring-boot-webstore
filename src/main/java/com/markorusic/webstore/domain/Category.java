@@ -1,7 +1,9 @@
 package com.markorusic.webstore.domain;
 
 import lombok.*;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -9,8 +11,8 @@ import javax.persistence.*;
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "products")
-public class Product {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue
@@ -18,9 +20,6 @@ public class Product {
 
     private String name;
 
-    private float price;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
-
+    @OneToMany
+    private List<Product> products;
 }

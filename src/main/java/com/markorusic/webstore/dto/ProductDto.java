@@ -15,6 +15,6 @@ public class ProductDto {
 
     private Float price;
 
-    private CategoryDto category;
+    private CategoryPageDto category;
 
 }

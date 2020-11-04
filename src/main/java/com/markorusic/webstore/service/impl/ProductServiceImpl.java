@@ -51,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
         var product = Product.builder()
             .name(productRequestDto.getName())
             .price(productRequestDto.getPrice())
+            .photo(productRequestDto.getPhoto())
             .build();
         productDao.save(product);
         return mapper.map(product, ProductDto.class);
@@ -61,7 +62,8 @@ public class ProductServiceImpl implements ProductService {
         var productDto = findById(productRequestDto.getId());
         var product = mapper.map(productDto, Product.class)
             .withName(productRequestDto.getName())
-            .withPrice(productRequestDto.getPrice());
+            .withPrice(productRequestDto.getPrice())
+            .withPhoto(productRequestDto.getPhoto());
         productDao.save(product);
         return mapper.map(product, ProductDto.class);
     }

@@ -18,7 +18,9 @@ public class Product {
 
     private String name;
 
-    private float price;
+    private Float price;
+
+    private String photo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;

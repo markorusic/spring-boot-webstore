@@ -17,5 +17,8 @@ public class ProductRequestDto {
     private String name;
 
     @NotNull(message = "price cannot be null")
-    private float price;
+    private Float price;
+
+    @NotNull(message = "photo cannot be null")
+    private String photo;
 }

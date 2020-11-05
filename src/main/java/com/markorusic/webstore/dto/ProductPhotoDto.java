@@ -7,14 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductPageDto {
+public class ProductPhotoDto {
     private Long id;
 
-    private String name;
-
-    private Float price;
-
-    private String photo;
-
-    private Long categoryId;
+    private String path;
 }

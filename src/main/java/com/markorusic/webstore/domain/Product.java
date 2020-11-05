@@ -2,6 +2,7 @@ package com.markorusic.webstore.domain;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,7 +23,10 @@ public class Product {
 
     private String photo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<ProductPhoto> photos;
 
 }

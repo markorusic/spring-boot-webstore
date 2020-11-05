@@ -1,10 +1,14 @@
 package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.ProductDao;
+import com.markorusic.webstore.dao.ProductPhotoDao;
+import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.domain.Product;
+import com.markorusic.webstore.domain.ProductPhoto;
 import com.markorusic.webstore.dto.ProductPageDto;
 import com.markorusic.webstore.dto.ProductRequestDto;
 import com.markorusic.webstore.dto.ProductDto;
+import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
@@ -18,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +30,16 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
     private ProductDao productDao;
 
     @Autowired
-    private ModelMapper mapper;
+    private ProductPhotoDao productPhotoDao;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     public Page<ProductPageDto> findAll(Predicate predicate, Pageable pageable) {
@@ -46,25 +57,46 @@ public class ProductServiceImpl implements ProductService {
         return mapper.map(product, ProductDto.class);
     }
 
+    private Product prepareProduct(Product product, ProductRequestDto productRequestDto) {
+        var categoryDto = categoryService.findById((productRequestDto.getCategoryId()));
+        var category = mapper.map(categoryDto, Category.class);
+        return product
+                .withName(productRequestDto.getName())
+                .withPrice(productRequestDto.getPrice())
+                .withPhoto(productRequestDto.getPhoto())
+                .withCategory(category);
+    }
+
+    @Transactional
+    private void savePhotos(Product product, ProductRequestDto productRequestDto) {
+        var photos = productRequestDto
+                .getPhotos()
+                .stream()
+                .map(photo ->ProductPhoto.builder().path(photo).product(product).build())
+                .collect(Collectors.toList());
+        if (productRequestDto.getId() != null) {
+            productPhotoDao.deleteByProduct_Id(productRequestDto.getId());
+        }
+        productPhotoDao.saveAll(photos);
+        product.setPhotos(photos);
+    }
+
     @Override
+    @Transactional
     public ProductDto save(ProductRequestDto productRequestDto) {
-        var product = Product.builder()
-            .name(productRequestDto.getName())
-            .price(productRequestDto.getPrice())
-            .photo(productRequestDto.getPhoto())
-            .build();
+        var product = prepareProduct(new Product(), productRequestDto);
         productDao.save(product);
+        savePhotos(product, productRequestDto);
         return mapper.map(product, ProductDto.class);
     }
 
     @Override
+    @Transactional
     public ProductDto update(ProductRequestDto productRequestDto) {
         var productDto = findById(productRequestDto.getId());
-        var product = mapper.map(productDto, Product.class)
-            .withName(productRequestDto.getName())
-            .withPrice(productRequestDto.getPrice())
-            .withPhoto(productRequestDto.getPhoto());
+        var product = prepareProduct(mapper.map(productDto, Product.class), productRequestDto);
         productDao.save(product);
+        savePhotos(product, productRequestDto);
         return mapper.map(product, ProductDto.class);
     }
 }

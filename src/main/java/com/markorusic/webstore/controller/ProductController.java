@@ -49,4 +49,10 @@ public class ProductController {
     public ProductDto update(@Validated(ValidationGroup.Update.class) @RequestBody ProductRequestDto productRequestDto) {
         return productService.update(productRequestDto);
     }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Method for deleting existing product")
+    public void delete(@RequestParam Long id) {
+        productService.delete(id);
+    }
 }

@@ -99,4 +99,11 @@ public class ProductServiceImpl implements ProductService {
         savePhotos(product, productRequestDto);
         return mapper.map(product, ProductDto.class);
     }
+
+    @Override
+    public void delete(Long id) {
+        var productDto = findById(id);
+        var product = mapper.map(productDto, Product.class);
+        productDao.delete(product);
+    }
 }

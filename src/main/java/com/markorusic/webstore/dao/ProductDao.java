@@ -12,6 +12,8 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 
 public interface ProductDao extends JpaRepository<Product, Long>, QuerydslPredicateExecutor<Product>, QuerydslBinderCustomizer<QProduct> {
 
+    Boolean existsByCategoryId(Long categoryId);
+
     @Override
     default void customize(QuerydslBindings bindings, QProduct root) {
         bindings.bind(String.class)

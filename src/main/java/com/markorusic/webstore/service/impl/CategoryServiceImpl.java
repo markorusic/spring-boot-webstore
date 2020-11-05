@@ -1,11 +1,13 @@
 package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.CategoryDao;
+import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.*;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
+import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
@@ -23,6 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryDao categoryDao;
+
+    @Autowired
+    ProductDao  productDao;
 
     @Autowired
     ModelMapper mapper;
@@ -59,5 +64,15 @@ public class CategoryServiceImpl implements CategoryService {
                 .withName(categoryRequestDto.getName());
         categoryDao.save(category);
         return mapper.map(category, CategoryDto.class);
+    }
+
+    @Override
+    public void delete(Long id) {
+        var categoryDto = findById(id);
+        var category = mapper.map(categoryDto, Category.class);
+        if(productDao.existsByCategoryId(id)) {
+            throw new SafeModeException("Cannot delete category that has products in it.");
+        }
+        categoryDao.delete(category);
     }
 }

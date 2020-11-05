@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(photo ->ProductPhoto.builder().path(photo).product(product).build())
                 .collect(Collectors.toList());
         if (productRequestDto.getId() != null) {
-            productPhotoDao.deleteByProduct_Id(productRequestDto.getId());
+            productPhotoDao.deleteByProductId(productRequestDto.getId());
         }
         productPhotoDao.saveAll(photos);
         product.setPhotos(photos);

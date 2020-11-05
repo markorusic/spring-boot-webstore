@@ -47,4 +47,10 @@ public class CategoryController {
     public CategoryDto update(@Validated(ValidationGroup.Update.class) @RequestBody CategoryRequestDto categoryRequestDto) {
         return categoryService.update(categoryRequestDto);
     }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Method for deleting existing category")
+    public void delete(@RequestParam Long id) {
+        categoryService.delete(id);
+    }
 }

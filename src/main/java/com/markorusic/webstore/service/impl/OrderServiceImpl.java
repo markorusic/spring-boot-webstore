@@ -9,6 +9,7 @@ import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.OrderDto;
 import com.markorusic.webstore.dto.OrderRequestDto;
 import com.markorusic.webstore.service.AuthService;
+import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Autowired
     private OrderDao orderDao;
@@ -79,6 +83,8 @@ public class OrderServiceImpl implements OrderService {
 
         orderDetailDao.saveAll(orderDetails);
         order.setOrderDetails(orderDetails);
+
+        customerService.track("Created order");
 
         return mapper.map(order, OrderDto.class);
     }

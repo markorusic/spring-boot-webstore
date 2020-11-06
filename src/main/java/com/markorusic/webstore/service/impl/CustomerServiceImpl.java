@@ -44,6 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .withFirstName(customerRequestDto.getFirstName())
                 .withLastName(customerRequestDto.getLastName());
         customerDao.save(customer);
+        track("Updated profile info");
         return mapper.map(customer, CustomerDto.class);
     }
 

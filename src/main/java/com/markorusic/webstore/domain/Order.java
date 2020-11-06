@@ -20,9 +20,9 @@ public class Order {
 
     private String note;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
     private List<OrderDetail> orderDetails;
 }

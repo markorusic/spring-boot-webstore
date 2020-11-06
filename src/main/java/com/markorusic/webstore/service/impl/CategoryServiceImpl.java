@@ -10,6 +10,7 @@ import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,16 +22,17 @@ import org.springframework.util.Assert;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    CategoryDao categoryDao;
+    private CategoryDao categoryDao;
 
     @Autowired
-    ProductDao  productDao;
+    private ProductDao  productDao;
 
     @Autowired
-    ModelMapper mapper;
+    private ModelMapper mapper;
 
     @Override
     public Page<CategoryPageDto> findAll(Predicate predicate, Pageable pageable) {

@@ -24,7 +24,7 @@ public class OrderController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "Method for creating new order")
-    public OrderDto save(@Validated(ValidationGroup.Save.class) @RequestBody OrderRequestDto orderRequestDto) {
+    public OrderDto save(@Validated @RequestBody OrderRequestDto orderRequestDto) {
         return orderService.save(orderRequestDto);
     }
 

@@ -3,11 +3,10 @@ package com.markorusic.webstore.service.impl;
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.dao.CustomerDao;
 import com.markorusic.webstore.domain.CustomerAction;
-import com.markorusic.webstore.domain.Product;
+import com.markorusic.webstore.domain.QCustomerAction;
 import com.markorusic.webstore.dto.CustomerActionDto;
 import com.markorusic.webstore.dto.CustomerDto;
 import com.markorusic.webstore.dto.CustomerRequestDto;
-import com.markorusic.webstore.dto.ProductPageDto;
 import com.markorusic.webstore.service.AuthService;
 import com.markorusic.webstore.service.CustomerService;
 import com.querydsl.core.BooleanBuilder;
@@ -63,8 +62,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<CustomerActionDto> findActions(Predicate predicate, Pageable pageable) {
         var customer = authService.getCustomer();
-        // TODO: filter only customer's actions
-        var customerActions = customerActionDao.findAll(new BooleanBuilder().and(predicate), pageable);
+        var customerExpression = QCustomerAction.customerAction.customer.id.eq(customer.getId());
+        var customerActions = customerActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
         return new PageImpl<>(customerActions.stream()
                 .map(customerAction -> mapper.map(customerAction, CustomerActionDto.class))
                 .collect(Collectors.toList()), pageable, customerActions.getTotalElements());

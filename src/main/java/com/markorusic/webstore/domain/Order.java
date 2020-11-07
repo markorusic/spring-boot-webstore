@@ -20,6 +20,9 @@ public class Order {
 
     private String note;
 
+    @Column(nullable = false)
+    private OrderStatus status;
+
     @ManyToOne(optional = false)
     private Customer customer;
 

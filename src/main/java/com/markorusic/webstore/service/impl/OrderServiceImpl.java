@@ -5,12 +5,14 @@ import com.markorusic.webstore.dao.OrderDetailDao;
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Order;
 import com.markorusic.webstore.domain.OrderDetail;
+import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.OrderDto;
 import com.markorusic.webstore.dto.OrderRequestDto;
 import com.markorusic.webstore.service.AuthService;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
+import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -48,8 +50,8 @@ public class OrderServiceImpl implements OrderService {
         var productIds = orderRequestDto.getOrderDetails().stream().map(orderDetailRequestDto -> orderDetailRequestDto.getProductId()).collect(Collectors.toList());
         var products = productDao.findByIdIn(productIds);
 
-        if (products.isEmpty()) {
-            throw new SafeModeException("Order needs to have at least 1 valid product.");
+        if (productIds.size() != products.size()) {
+            throw new SafeModeException("Cannot process invalid products.");
         }
 
         var productsMap = products.stream()
@@ -59,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
                 .customer(authService.getCustomer())
                 .note(orderRequestDto.getNote())
                 .shippingAddress(orderRequestDto.getShippingAddress())
+                .status(OrderStatus.Pending)
                 .build();
 
         orderDao.save(order);
@@ -84,9 +87,10 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDao.saveAll(orderDetails);
         order.setOrderDetails(orderDetails);
 
-        customerService.track("Created order");
+        var orderDto = mapper.map(order, OrderDto.class);
+        customerService.track("Created order with id" + order.getId());
 
-        return mapper.map(order, OrderDto.class);
+        return orderDto;
     }
 
     @Override
@@ -96,5 +100,14 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(order -> mapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderDto changeStatus(Long orderId, OrderStatus status) {
+        var order = orderDao.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with identifier %s not found!", orderId.toString())));
+        order.setStatus(status);
+        orderDao.save(order);
+        return mapper.map(order, OrderDto.class);
     }
 }

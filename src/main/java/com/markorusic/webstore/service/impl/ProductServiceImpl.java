@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductPageDto> findAll(Predicate predicate, Pageable pageable) {
-        Page<Product> products = productDao.findAll(new BooleanBuilder().and(predicate), pageable);
+        var products = productDao.findAll(new BooleanBuilder().and(predicate), pageable);
         return new PageImpl<>(products.stream()
                 .map(product -> mapper.map(product, ProductPageDto.class))
                 .collect(Collectors.toList()), pageable, products.getTotalElements());

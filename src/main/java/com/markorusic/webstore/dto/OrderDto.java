@@ -1,6 +1,7 @@
 package com.markorusic.webstore.dto;
 
 import com.markorusic.webstore.domain.OrderDetail;
+import com.markorusic.webstore.domain.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ public class OrderDto {
     private String shippingAddress;
 
     private String note;
+
+    private OrderStatus status;
 
     private CustomerDto customer;
 

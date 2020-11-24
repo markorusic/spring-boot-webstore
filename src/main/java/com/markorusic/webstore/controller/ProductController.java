@@ -2,9 +2,9 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
-import com.markorusic.webstore.dto.ProductPageDto;
-import com.markorusic.webstore.dto.ProductRequestDto;
-import com.markorusic.webstore.dto.ProductDto;
+import com.markorusic.webstore.dto.product.ProductPageDto;
+import com.markorusic.webstore.dto.product.ProductRequestDto;
+import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.ValidationGroup;
 import com.querydsl.core.types.Predicate;

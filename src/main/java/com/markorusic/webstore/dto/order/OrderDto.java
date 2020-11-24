@@ -1,4 +1,4 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.order;
 
 import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.dto.customer.CustomerDto;

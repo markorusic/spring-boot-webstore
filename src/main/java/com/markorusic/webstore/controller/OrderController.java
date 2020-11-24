@@ -1,8 +1,8 @@
 package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.domain.OrderStatus;
-import com.markorusic.webstore.dto.OrderDto;
-import com.markorusic.webstore.dto.OrderRequestDto;
+import com.markorusic.webstore.dto.order.OrderDto;
+import com.markorusic.webstore.dto.order.OrderRequestDto;
 import com.markorusic.webstore.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -1,4 +1,4 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductPageDto {
+public class OrderDetailDto {
     private Long id;
 
     private String name;
@@ -16,5 +16,7 @@ public class ProductPageDto {
 
     private String photo;
 
-    private Long categoryId;
+    private Long quantity;
+
+    private Long productId;
 }

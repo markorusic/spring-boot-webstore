@@ -5,7 +5,7 @@ import com.markorusic.webstore.dao.CustomerDao;
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.domain.QCustomerAction;
-import com.markorusic.webstore.dto.CustomerActionDto;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.dto.customer.CustomerDto;
 import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
 import com.markorusic.webstore.dto.customer.CustomerRequestDto;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

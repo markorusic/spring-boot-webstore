@@ -2,7 +2,9 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.CategoryDao;
 import com.markorusic.webstore.domain.Category;
-import com.markorusic.webstore.dto.*;
+import com.markorusic.webstore.dto.category.CategoryDto;
+import com.markorusic.webstore.dto.category.CategoryPageDto;
+import com.markorusic.webstore.dto.category.CategoryRequestDto;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.util.ValidationGroup;
 import com.querydsl.core.types.Predicate;

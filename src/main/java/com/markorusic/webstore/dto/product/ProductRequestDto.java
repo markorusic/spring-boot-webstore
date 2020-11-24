@@ -1,4 +1,4 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.product;
 
 import com.markorusic.webstore.util.ValidationGroup;
 import lombok.*;

@@ -7,8 +7,8 @@ import com.markorusic.webstore.domain.Order;
 import com.markorusic.webstore.domain.OrderDetail;
 import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.domain.Product;
-import com.markorusic.webstore.dto.OrderDto;
-import com.markorusic.webstore.dto.OrderRequestDto;
+import com.markorusic.webstore.dto.order.OrderDto;
+import com.markorusic.webstore.dto.order.OrderRequestDto;
 import com.markorusic.webstore.service.AuthService;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service

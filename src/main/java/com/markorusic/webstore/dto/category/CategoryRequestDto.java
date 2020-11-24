@@ -1,4 +1,4 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.category;
 
 import com.markorusic.webstore.util.ValidationGroup;
 import lombok.AllArgsConstructor;

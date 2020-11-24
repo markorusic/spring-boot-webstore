@@ -2,7 +2,7 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.domain.CustomerAction;
-import com.markorusic.webstore.dto.*;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.dto.customer.CustomerDto;
 import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
 import com.markorusic.webstore.dto.customer.CustomerRequestDto;

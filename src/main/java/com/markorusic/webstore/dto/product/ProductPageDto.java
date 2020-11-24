@@ -1,16 +1,13 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
-
+public class ProductPageDto {
     private Long id;
 
     private String name;
@@ -19,8 +16,5 @@ public class ProductDto {
 
     private String photo;
 
-    private List<ProductPhotoDto> photos;
-
-    private CategoryPageDto category;
-
+    private Long categoryId;
 }

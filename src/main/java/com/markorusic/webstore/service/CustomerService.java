@@ -1,6 +1,6 @@
 package com.markorusic.webstore.service;
 
-import com.markorusic.webstore.dto.CustomerActionDto;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.dto.customer.CustomerDto;
 import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
 import com.markorusic.webstore.dto.customer.CustomerRequestDto;

@@ -1,9 +1,8 @@
 package com.markorusic.webstore.service;
 
-import com.markorusic.webstore.domain.Product;
-import com.markorusic.webstore.dto.ProductPageDto;
-import com.markorusic.webstore.dto.ProductRequestDto;
-import com.markorusic.webstore.dto.ProductDto;
+import com.markorusic.webstore.dto.product.ProductPageDto;
+import com.markorusic.webstore.dto.product.ProductRequestDto;
+import com.markorusic.webstore.dto.product.ProductDto;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

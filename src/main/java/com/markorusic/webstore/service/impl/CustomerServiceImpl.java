@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public CustomerDto update(CustomerRequestDto customerRequestDto) {
@@ -82,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .email(customerRegistrationDto.getEmail())
                 .firstName(customerRegistrationDto.getFirstName())
                 .lastName(customerRegistrationDto.getLastName())
-                .password(customerRegistrationDto.getPassword())
+                .password(passwordEncoder.encode(customerRegistrationDto.getPassword()))
                 .build();
         customerDao.save(customer);
         return mapper.map(customer, CustomerDto.class);

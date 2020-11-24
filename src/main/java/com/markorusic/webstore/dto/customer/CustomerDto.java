@@ -1,4 +1,4 @@
-package com.markorusic.webstore.dto;
+package com.markorusic.webstore.dto.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

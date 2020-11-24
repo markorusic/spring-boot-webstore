@@ -1,7 +1,7 @@
 package com.markorusic.webstore.dto;
 
-import com.markorusic.webstore.domain.OrderDetail;
 import com.markorusic.webstore.domain.OrderStatus;
+import com.markorusic.webstore.dto.customer.CustomerDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

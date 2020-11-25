@@ -1,9 +1,6 @@
 package com.markorusic.webstore.service;
 
-import com.markorusic.webstore.dto.customer.CustomerActionDto;
-import com.markorusic.webstore.dto.customer.CustomerDto;
-import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
-import com.markorusic.webstore.dto.customer.CustomerRequestDto;
+import com.markorusic.webstore.dto.customer.*;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +13,6 @@ public interface CustomerService {
     Page<CustomerActionDto> findActions(Predicate predicate, Pageable pageable);
 
     CustomerDto register(CustomerRegistrationDto customerRegistrationDto);
+
+    CustomerDto login(CustomerLoginDto customerLoginDto);
 }

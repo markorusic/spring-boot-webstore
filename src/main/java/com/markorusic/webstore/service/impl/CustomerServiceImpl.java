@@ -5,12 +5,11 @@ import com.markorusic.webstore.dao.CustomerDao;
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.domain.QCustomerAction;
-import com.markorusic.webstore.dto.customer.CustomerActionDto;
-import com.markorusic.webstore.dto.customer.CustomerDto;
-import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
-import com.markorusic.webstore.dto.customer.CustomerRequestDto;
+import com.markorusic.webstore.dto.customer.*;
 import com.markorusic.webstore.service.AuthService;
 import com.markorusic.webstore.service.CustomerService;
+import com.markorusic.webstore.util.exception.BadRequestException;
+import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -89,6 +88,15 @@ public class CustomerServiceImpl implements CustomerService {
                 .password(passwordEncoder.encode(customerRegistrationDto.getPassword()))
                 .build();
         customerDao.save(customer);
+        return mapper.map(customer, CustomerDto.class);
+    }
+
+    @Override
+    public CustomerDto login(CustomerLoginDto customerLoginDto) {
+        var customer = customerDao.findByEmail(customerLoginDto.getEmail());
+        if (customer == null || !passwordEncoder.matches(customerLoginDto.getPassword(), customer.getPassword())) {
+            throw new BadRequestException("Wrong credentials");
+        }
         return mapper.map(customer, CustomerDto.class);
     }
 }

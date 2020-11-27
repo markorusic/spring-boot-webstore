@@ -9,7 +9,7 @@ import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.dto.order.OrderDto;
 import com.markorusic.webstore.dto.order.OrderRequestDto;
-import com.markorusic.webstore.service.AuthService;
+import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
@@ -56,8 +56,9 @@ public class OrderServiceImpl implements OrderService {
         var productsMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, product -> product));
 
+        var customer = customerService.findById(authService.getUser().getId());
         var order = Order.builder()
-                .customer(authService.getCustomer())
+                .customer(customer)
                 .note(orderRequestDto.getNote())
                 .shippingAddress(orderRequestDto.getShippingAddress())
                 .status(OrderStatus.Pending)
@@ -94,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findCustomerOrders() {
-        var customerId = authService.getCustomer().getId();
+        var customerId = authService.getUser().getId();
         return orderDao.findByCustomerId(customerId)
                 .stream()
                 .map(order -> mapper.map(order, OrderDto.class))

@@ -3,6 +3,7 @@ package com.markorusic.webstore.controller;
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.service.CustomerService;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
@@ -31,7 +32,7 @@ public class CustomerController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "Method for getting currently authenticated customer's actions with pagination and search support")
-    public CustomerDto login(@Validated @RequestBody CustomerLoginDto customerLoginDto) {
+    public AuthResponseDto login(@Validated @RequestBody CustomerLoginDto customerLoginDto) {
         return customerService.login(customerLoginDto);
     }
 

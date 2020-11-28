@@ -3,6 +3,7 @@ package com.markorusic.webstore.controller;
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.service.CustomerService;
 import com.querydsl.core.types.Predicate;
@@ -25,15 +26,15 @@ public class CustomerController {
     private CustomerService customerService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ApiOperation(value = "Method for getting currently authenticated customer's actions with pagination and search support")
+    @ApiOperation(value = "Method registering new customer user")
     public CustomerDto register(@Validated @RequestBody CustomerRegistrationDto customerRegistrationDto) {
         return customerService.register(customerRegistrationDto);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ApiOperation(value = "Method for getting currently authenticated customer's actions with pagination and search support")
-    public AuthResponseDto login(@Validated @RequestBody CustomerLoginDto customerLoginDto) {
-        return customerService.login(customerLoginDto);
+    @ApiOperation(value = "Method authenticating customer user")
+    public AuthResponseDto login(@Validated @RequestBody AuthRequestDto authRequestDto) {
+        return customerService.login(authRequestDto);
     }
 
     @RequestMapping(value = "/findActions", method = RequestMethod.GET)

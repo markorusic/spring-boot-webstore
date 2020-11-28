@@ -6,6 +6,7 @@ import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.domain.QCustomerAction;
 import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.security.domain.AuthRole;
 import com.markorusic.webstore.security.AuthService;
@@ -104,9 +105,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public AuthResponseDto login(CustomerLoginDto customerLoginDto) {
-        var customer = customerDao.findByEmail(customerLoginDto.getEmail());
-        if (customer == null || !passwordEncoder.matches(customerLoginDto.getPassword(), customer.getPassword())) {
+    public AuthResponseDto login(AuthRequestDto authRequestDto) {
+        var customer = customerDao.findByEmail(authRequestDto.getEmail());
+        if (customer == null || !passwordEncoder.matches(authRequestDto.getPassword(), customer.getPassword())) {
             throw new BadRequestException("Wrong credentials");
         }
         return authService.authorize(AuthUser.builder().id(customer.getId()).role(AuthRole.Customer).build());

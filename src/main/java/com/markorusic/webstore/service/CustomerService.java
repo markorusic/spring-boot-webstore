@@ -2,6 +2,7 @@ package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -19,5 +20,5 @@ public interface CustomerService {
 
     CustomerDto register(CustomerRegistrationDto customerRegistrationDto);
 
-    AuthResponseDto login(CustomerLoginDto customerLoginDto);
+    AuthResponseDto login(AuthRequestDto authRequestDto);
 }

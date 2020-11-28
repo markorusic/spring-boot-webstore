@@ -110,6 +110,9 @@ public class CustomerServiceImpl implements CustomerService {
         if (customer == null || !passwordEncoder.matches(authRequestDto.getPassword(), customer.getPassword())) {
             throw new BadRequestException("Wrong credentials");
         }
-        return authService.authorize(AuthUser.builder().id(customer.getId()).role(AuthRole.Customer).build());
+        return authService.authorize(
+            AuthUser.builder().id(customer.getId()).role(AuthRole.Customer).build(),
+            mapper.map(customer, CustomerDto.class)
+        );
     }
 }

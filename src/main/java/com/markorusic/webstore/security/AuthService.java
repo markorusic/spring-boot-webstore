@@ -58,7 +58,7 @@ public class AuthService implements InitializingBean {
         return user;
     }
 
-    public AuthResponseDto authorize(AuthUser authUser) {
+    public <T> AuthResponseDto authorize(AuthUser authUser, T user) {
         var now = (new Date()).getTime();
         var validity = new Date(now + TOKEN_DURATION);
 
@@ -69,7 +69,7 @@ public class AuthService implements InitializingBean {
                     .signWith(key)
                     .setExpiration(validity)
                     .compact();
-            return new AuthResponseDto(jws);
+            return new AuthResponseDto(jws, user);
         } catch (JsonProcessingException e) {
             throw new UnauthorizedException();
         }

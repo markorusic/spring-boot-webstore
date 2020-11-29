@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomerService {
 
-    Customer findById(Long id);
-
     CustomerDto update(CustomerRequestDto customerRequestDto);
 
     CustomerActionDto track(String actionType);
@@ -21,4 +19,6 @@ public interface CustomerService {
     CustomerDto register(CustomerRegistrationDto customerRegistrationDto);
 
     AuthResponseDto login(AuthRequestDto authRequestDto);
+
+    Customer getAuthenticatedCustomer();
 }

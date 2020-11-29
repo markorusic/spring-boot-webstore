@@ -18,9 +18,9 @@ import java.util.List;
 @Component
 public class AuthFilter implements Filter {
 
-    private final List<String> CUSTOMER_ROUTES = Arrays.asList("customers/findActions", "customers/update");
+    private final List<String> CUSTOMER_ROUTES = Arrays.asList("customers/findActions", "customers/update", "customers/me");
 
-    private final List<String> ADMIN_ROUTES = Arrays.asList("products/save");
+    private final List<String> ADMIN_ROUTES = Arrays.asList("products/save", "admins/me");
 
     @Value("${jwt.header}")
     private String AUTH_HEADER;
@@ -47,7 +47,7 @@ public class AuthFilter implements Filter {
                 String token = request.getHeader(AUTH_HEADER);
                 authService.init(token);
                 var role = authService.getUser().getRole();
-                logger.info(String.format("%s, %s, %s", isAdminRoute, isCustomerRoute, role));
+                logger.info("userID" + authService.getUser().getId().toString());
                 if (
                     (isAdminRoute && role != AuthRole.Admin) ||
                     (isCustomerRoute && role != AuthRole.Customer)

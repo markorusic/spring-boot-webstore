@@ -2,6 +2,7 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.domain.CustomerAction;
+import com.markorusic.webstore.dto.admin.AdminDto;
 import com.markorusic.webstore.dto.customer.*;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
@@ -10,6 +11,7 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,9 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ApiOperation(value = "Method registering new customer user")
     public CustomerDto register(@Validated @RequestBody CustomerRegistrationDto customerRegistrationDto) {
@@ -35,6 +40,13 @@ public class CustomerController {
     @ApiOperation(value = "Method authenticating customer user")
     public AuthResponseDto login(@Validated @RequestBody AuthRequestDto authRequestDto) {
         return customerService.login(authRequestDto);
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for getting currently authenticated customer")
+    public CustomerDto login() {
+        var customer = customerService.getAuthenticatedCustomer();
+        return mapper.map(customer, CustomerDto.class);
     }
 
     @RequestMapping(value = "/findActions", method = RequestMethod.GET)

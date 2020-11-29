@@ -47,8 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Override
-    public Customer findById(Long id) {
+    private Customer findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
         var customer = customerDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Customer with identifier %s not found!", id.toString())));
@@ -80,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Page<CustomerActionDto> findActions(Predicate predicate, Pageable pageable) {
-        var customer = findById(authService.getUser().getId());
+        var customer = getAuthenticatedCustomer();
         var customerExpression = QCustomerAction.customerAction.customer.id.eq(customer.getId());
         var customerActions = customerActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
         return new PageImpl<>(customerActions.stream()
@@ -114,5 +113,10 @@ public class CustomerServiceImpl implements CustomerService {
             AuthUser.builder().id(customer.getId()).role(AuthRole.Customer).build(),
             mapper.map(customer, CustomerDto.class)
         );
+    }
+
+    @Override
+    public Customer getAuthenticatedCustomer() {
+        return findById(authService.getUser().getId());
     }
 }

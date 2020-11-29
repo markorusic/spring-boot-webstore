@@ -1,6 +1,7 @@
 package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.AdminDao;
+import com.markorusic.webstore.domain.Admin;
 import com.markorusic.webstore.dto.admin.AdminDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
@@ -9,6 +10,7 @@ import com.markorusic.webstore.security.domain.AuthRole;
 import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.util.exception.BadRequestException;
+import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,5 +41,13 @@ public class AdminServiceImpl implements AdminService {
             AuthUser.builder().id(admin.getId()).role(AuthRole.Admin).build(),
             mapper.map(admin, AdminDto.class)
         );
+    }
+
+    @Override
+    public Admin getAuthenticatedAdmin() {
+        var id = authService.getUser().getId();
+        var admin = adminDao.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id.toString())));
+        return admin;
     }
 }

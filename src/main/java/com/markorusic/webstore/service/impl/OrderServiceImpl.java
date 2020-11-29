@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
         var productsMap = products.stream()
                 .collect(Collectors.toMap(Product::getId, product -> product));
 
-        var customer = customerService.findById(authService.getUser().getId());
+        var customer = customerService.getAuthenticatedCustomer();
         var order = Order.builder()
                 .customer(customer)
                 .note(orderRequestDto.getNote())

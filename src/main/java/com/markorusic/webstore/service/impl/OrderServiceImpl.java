@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderPageItemDto> findAll(Predicate predicate, Pageable pageable) {
-        var orders = productDao.findAll(new BooleanBuilder().and(predicate), pageable);
+        var orders = orderDao.findAll(new BooleanBuilder().and(predicate), pageable);
         return new PageImpl<>(orders.stream()
                 .map(order -> mapper.map(order, OrderPageItemDto.class))
                 .collect(Collectors.toList()), pageable, orders.getTotalElements());

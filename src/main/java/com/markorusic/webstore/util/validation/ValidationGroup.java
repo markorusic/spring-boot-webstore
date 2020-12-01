@@ -1,4 +1,4 @@
-package com.markorusic.webstore.util;
+package com.markorusic.webstore.util.validation;
 
 import javax.validation.groups.Default;
 

@@ -1,8 +1,11 @@
 package com.markorusic.webstore.service.impl;
 
+import com.markorusic.webstore.dao.AdminActionDao;
 import com.markorusic.webstore.dao.AdminDao;
-import com.markorusic.webstore.domain.Admin;
+import com.markorusic.webstore.domain.*;
+import com.markorusic.webstore.dto.admin.AdminActionDto;
 import com.markorusic.webstore.dto.admin.AdminDto;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
@@ -11,16 +14,28 @@ import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.util.exception.BadRequestException;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminDao adminDao;
+
+    @Autowired
+    private AdminActionDao adminActionDao;
 
     @Autowired
     private AuthService authService;
@@ -30,6 +45,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private ModelMapper mapper;
+
+    private Admin findById(Long id) {
+        Assert.notNull(id, "Parameter can't by null!");
+        var admin = adminDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id.toString())));
+        return admin;
+    }
 
     @Override
     public AuthResponseDto login(AuthRequestDto authRequestDto) {
@@ -49,5 +71,27 @@ public class AdminServiceImpl implements AdminService {
         var admin = adminDao.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id.toString())));
         return admin;
+    }
+
+    @Override
+    public AdminActionDto track(String actionType) {
+        var admin = findById(authService.getUser().getId());
+        var adminAction = AdminAction.builder()
+                .actionType(actionType)
+                .admin(admin)
+                .createdAt(LocalDateTime.now())
+                .build();
+        adminActionDao.save(adminAction);
+        return mapper.map(adminAction, AdminActionDto.class);
+    }
+
+    @Override
+    public Page<AdminActionDto> findActions(Predicate predicate, Pageable pageable) {
+        var customer = getAuthenticatedAdmin();
+        var customerExpression = QAdminAction.adminAction.admin.id.eq(customer.getId());
+        var adminActions = adminActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
+        return new PageImpl<>(adminActions.stream()
+                .map(adminAction -> mapper.map(adminAction, AdminActionDto.class))
+                .collect(Collectors.toList()), pageable, adminActions.getTotalElements());
     }
 }

@@ -1,6 +1,6 @@
 package com.markorusic.webstore.dto.product;
 
-import com.markorusic.webstore.util.ValidationGroup;
+import com.markorusic.webstore.util.validation.ValidationGroup;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;

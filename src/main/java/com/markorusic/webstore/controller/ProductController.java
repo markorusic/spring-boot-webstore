@@ -6,7 +6,7 @@ import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
 import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.service.ProductService;
-import com.markorusic.webstore.util.ValidationGroup;
+import com.markorusic.webstore.util.validation.ValidationGroup;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

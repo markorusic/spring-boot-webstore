@@ -6,7 +6,7 @@ import com.markorusic.webstore.dto.category.CategoryDto;
 import com.markorusic.webstore.dto.category.CategoryPageDto;
 import com.markorusic.webstore.dto.category.CategoryRequestDto;
 import com.markorusic.webstore.service.CategoryService;
-import com.markorusic.webstore.util.ValidationGroup;
+import com.markorusic.webstore.util.validation.ValidationGroup;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

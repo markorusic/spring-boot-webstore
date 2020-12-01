@@ -1,6 +1,5 @@
-package com.markorusic.webstore.util;
+package com.markorusic.webstore.util.validation;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.validation.ConstraintValidator;

@@ -49,7 +49,7 @@ public class CustomerController {
         return mapper.map(customer, CustomerDto.class);
     }
 
-    @RequestMapping(value = "/findActions", method = RequestMethod.GET)
+    @RequestMapping(value = "/me/actions", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting currently authenticated customer's actions with pagination and search support")
     public Page<CustomerActionDto> findAll(@QuerydslPredicate(root = CustomerAction.class, bindings = CustomerActionDao.class) Predicate predicate, Pageable pageable) {
         return customerService.findActions(predicate, pageable);

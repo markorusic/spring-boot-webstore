@@ -8,6 +8,7 @@ import com.markorusic.webstore.domain.ProductPhoto;
 import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
 import com.markorusic.webstore.dto.product.ProductDto;
+import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
@@ -40,6 +41,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AdminService adminService;
 
     @Override
     public Page<ProductPageItemDto> findAll(Predicate predicate, Pageable pageable) {
@@ -87,6 +91,7 @@ public class ProductServiceImpl implements ProductService {
         var product = prepareProduct(new Product(), productRequestDto);
         productDao.save(product);
         savePhotos(product, productRequestDto);
+        adminService.track("Created product with id " + product.getId());
         return mapper.map(product, ProductDto.class);
     }
 
@@ -97,6 +102,7 @@ public class ProductServiceImpl implements ProductService {
         var product = prepareProduct(mapper.map(productDto, Product.class), productRequestDto);
         productDao.save(product);
         savePhotos(product, productRequestDto);
+        adminService.track("Updated product with id " + product.getId());
         return mapper.map(product, ProductDto.class);
     }
 
@@ -105,5 +111,6 @@ public class ProductServiceImpl implements ProductService {
         var productDto = findById(id);
         var product = mapper.map(productDto, Product.class);
         productDao.delete(product);
+        adminService.track("Deleted product with id " + product.getId());
     }
 }

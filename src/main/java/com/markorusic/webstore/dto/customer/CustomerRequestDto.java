@@ -1,6 +1,6 @@
 package com.markorusic.webstore.dto.customer;
 
-import com.markorusic.webstore.util.ValidEmail;
+import com.markorusic.webstore.util.validation.ValidEmail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

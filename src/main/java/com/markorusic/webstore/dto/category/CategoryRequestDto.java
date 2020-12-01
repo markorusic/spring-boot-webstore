@@ -1,6 +1,6 @@
 package com.markorusic.webstore.dto.category;
 
-import com.markorusic.webstore.util.ValidationGroup;
+import com.markorusic.webstore.util.validation.ValidationGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

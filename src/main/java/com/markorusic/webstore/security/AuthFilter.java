@@ -23,6 +23,7 @@ public class AuthFilter implements Filter {
     private final Map<AuthRole, List<String>> PROTECTED_ROUTES_MAP = Map.ofEntries(
         Map.entry(AuthRole.Admin, Arrays.asList(
             "admins/me",
+            "admins/me/actions",
             "products/save",
             "products/update",
             "products/delete",
@@ -34,9 +35,9 @@ public class AuthFilter implements Filter {
             "orders/ship"
         )),
         Map.entry(AuthRole.Customer, Arrays.asList(
-            "customers/findActions",
             "customers/update",
             "customers/me",
+            "customers/me/actions",
             "orders/me",
             "orders/save",
             "orders/cancel"

@@ -1,4 +1,4 @@
-package com.markorusic.webstore.util;
+package com.markorusic.webstore.util.validation;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;

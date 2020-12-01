@@ -6,6 +6,7 @@ import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.dto.category.CategoryDto;
 import com.markorusic.webstore.dto.category.CategoryPageDto;
 import com.markorusic.webstore.dto.category.CategoryRequestDto;
+import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
@@ -35,6 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private AdminService adminService;
+
     @Override
     public Page<CategoryPageDto> findAll(Predicate predicate, Pageable pageable) {
         var categories = categoryDao.findAll(new BooleanBuilder().and(predicate), pageable);
@@ -57,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .name(categoryRequestDto.getName())
                 .build();
         categoryDao.save(category);
+        adminService.track("Created category with id " + category.getId());
         return mapper.map(category, CategoryDto.class);
     }
 
@@ -66,6 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
         var category = mapper.map(categoryDto, Category.class)
                 .withName(categoryRequestDto.getName());
         categoryDao.save(category);
+        adminService.track("Updated category with id " + category.getId());
         return mapper.map(category, CategoryDto.class);
     }
 
@@ -77,5 +83,6 @@ public class CategoryServiceImpl implements CategoryService {
             throw new SafeModeException("Cannot delete category that has products in it.");
         }
         categoryDao.delete(category);
+        adminService.track("Deleted category with id " + category.getId());
     }
 }

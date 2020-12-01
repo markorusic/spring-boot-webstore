@@ -7,22 +7,17 @@ import com.markorusic.webstore.domain.Order;
 import com.markorusic.webstore.domain.OrderDetail;
 import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.domain.Product;
-import com.markorusic.webstore.dto.order.OrderDto;
-import com.markorusic.webstore.dto.order.OrderPageItemDto;
 import com.markorusic.webstore.dto.order.OrderRequestDto;
-import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
+import com.markorusic.webstore.util.exception.BadRequestException;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
-import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -49,24 +44,18 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductDao productDao;
 
-    @Autowired
-    private ModelMapper mapper;
-
     @Override
-    public Page<OrderPageItemDto> findAll(Predicate predicate, Pageable pageable) {
-        var orders = orderDao.findAll(new BooleanBuilder().and(predicate), pageable);
-        return new PageImpl<>(orders.stream()
-                .map(order -> mapper.map(order, OrderPageItemDto.class))
-                .collect(Collectors.toList()), pageable, orders.getTotalElements());
+    public Page<Order> findAll(Predicate predicate, Pageable pageable) {
+        return orderDao.findAll(new BooleanBuilder().and(predicate), pageable);
     }
 
     @Override
-    public OrderDto save(OrderRequestDto orderRequestDto) {
+    public Order save(OrderRequestDto orderRequestDto) {
         var productIds = orderRequestDto.getOrderDetails().stream().map(orderDetailRequestDto -> orderDetailRequestDto.getProductId()).collect(Collectors.toList());
         var products = productDao.findByIdIn(productIds);
 
         if (productIds.size() != products.size()) {
-            throw new SafeModeException("Cannot process invalid products.");
+            throw new BadRequestException("Cannot process invalid products.");
         }
 
         var productsMap = products.stream()
@@ -103,35 +92,27 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDao.saveAll(orderDetails);
         order.setOrderDetails(orderDetails);
 
-        var orderDto = mapper.map(order, OrderDto.class);
-        customerService.track("Created order with id" + order.getId());
-
-        return orderDto;
+        return order;
     }
 
     @Override
-    public List<OrderDto> findCustomerOrders() {
+    public List<Order> findCustomerOrders() {
         var customerId = authService.getUser().getId();
-        return orderDao.findByCustomerId(customerId)
-                .stream()
-                .map(order -> mapper.map(order, OrderDto.class))
-                .collect(Collectors.toList());
+        return orderDao.findByCustomerId(customerId);
     }
 
     @Override
-    public OrderDto changeStatus(Long orderId, OrderStatus status) {
-        var order = orderDao.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with identifier %s not found!", orderId.toString())));
+    public Order changeStatus(Long orderId, OrderStatus status) {
+        var order = findById(orderId);
         order.setStatus(status);
         orderDao.save(order);
-        return mapper.map(order, OrderDto.class);
+        return order;
     }
 
     @Override
-    public OrderDto findById(Long id) {
+    public Order findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
-        var order = orderDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with identifier %s not found!", id.toString())));
-        return mapper.map(order, OrderDto.class);
+        return orderDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with identifier %s not found!", id)));
     }
 }

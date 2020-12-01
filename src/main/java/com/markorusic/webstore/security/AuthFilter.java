@@ -13,14 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class AuthFilter implements Filter {
-
-    private final List<String> CUSTOMER_ROUTES = Arrays.asList("customers/findActions", "customers/update", "customers/me");
-
-    private final List<String> ADMIN_ROUTES = Arrays.asList("products/save", "admins/me");
+    
+    private final Map<AuthRole, List<String>> PRIVATE_ROUTE_PREFIX_MAP = Map.ofEntries(
+        Map.entry(AuthRole.Admin, Arrays.asList("products/save", "admins/me")),
+        Map.entry(AuthRole.Customer, Arrays.asList("customers/findActions", "customers/update", "customers/me"))
+    );
 
     @Value("${jwt.header}")
     private String AUTH_HEADER;
@@ -39,24 +42,21 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         var route = request.getRequestURI();
 
-        var isCustomerRoute = CUSTOMER_ROUTES.stream().anyMatch(route::contains);
-        var isAdminRoute = ADMIN_ROUTES.stream().anyMatch(route::contains);
+        var roleRouteMatches = new HashMap<AuthRole, Boolean>();
+        PRIVATE_ROUTE_PREFIX_MAP.forEach((role, paths) -> {
+            roleRouteMatches.put(role, paths.stream().anyMatch(route::contains));
+        });
 
-        if (isCustomerRoute || isAdminRoute) {
+        if (roleRouteMatches.values().stream().anyMatch(b -> b)) {
             try {
                 String token = request.getHeader(AUTH_HEADER);
                 authService.init(token);
                 var role = authService.getUser().getRole();
-                logger.info("userID" + authService.getUser().getId().toString());
-                if (
-                    (isAdminRoute && role != AuthRole.Admin) ||
-                    (isCustomerRoute && role != AuthRole.Customer)
-                ) {
+                if (!roleRouteMatches.get(role)) {
                     response.setStatus(403);
                     return;
                 }
             } catch (Exception e) {
-                logger.info("auth init failed");
                 response.setStatus(401);
                 return;
             }

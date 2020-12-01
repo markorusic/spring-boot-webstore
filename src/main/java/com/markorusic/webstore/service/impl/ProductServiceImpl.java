@@ -2,23 +2,17 @@ package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.dao.ProductPhotoDao;
-import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.domain.ProductPhoto;
-import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
-import com.markorusic.webstore.dto.product.ProductDto;
-import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -31,9 +25,6 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    private ModelMapper mapper;
-
-    @Autowired
     private ProductDao productDao;
 
     @Autowired
@@ -42,28 +33,20 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private AdminService adminService;
-
     @Override
-    public Page<ProductPageItemDto> findAll(Predicate predicate, Pageable pageable) {
-        var products = productDao.findAll(new BooleanBuilder().and(predicate), pageable);
-        return new PageImpl<>(products.stream()
-                .map(product -> mapper.map(product, ProductPageItemDto.class))
-                .collect(Collectors.toList()), pageable, products.getTotalElements());
+    public Page<Product> findAll(Predicate predicate, Pageable pageable) {
+        return productDao.findAll(new BooleanBuilder().and(predicate), pageable);
     }
 
     @Override
-    public ProductDto findById(Long id) {
+    public Product findById(Long id) {
         Assert.notNull(id, "Product id can't by null!");
-        var product = productDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Product with identifier %s not found!", id.toString())));
-        return mapper.map(product, ProductDto.class);
+        return productDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Product with identifier %s not found!", id)));
     }
 
     private Product prepareProduct(Product product, ProductRequestDto productRequestDto) {
-        var categoryDto = categoryService.findById((productRequestDto.getCategoryId()));
-        var category = mapper.map(categoryDto, Category.class);
+        var category = categoryService.findById((productRequestDto.getCategoryId()));
         return product
                 .withName(productRequestDto.getName())
                 .withPrice(productRequestDto.getPrice())
@@ -87,30 +70,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDto save(ProductRequestDto productRequestDto) {
+    public Product save(ProductRequestDto productRequestDto) {
         var product = prepareProduct(new Product(), productRequestDto);
         productDao.save(product);
         savePhotos(product, productRequestDto);
-        adminService.track("Created product with id " + product.getId());
-        return mapper.map(product, ProductDto.class);
+        return product;
     }
 
     @Override
     @Transactional
-    public ProductDto update(ProductRequestDto productRequestDto) {
-        var productDto = findById(productRequestDto.getId());
-        var product = prepareProduct(mapper.map(productDto, Product.class), productRequestDto);
+    public Product update(ProductRequestDto productRequestDto) {
+        var existingProduct = findById(productRequestDto.getId());
+        var product = prepareProduct(existingProduct, productRequestDto);
         productDao.save(product);
         savePhotos(product, productRequestDto);
-        adminService.track("Updated product with id " + product.getId());
-        return mapper.map(product, ProductDto.class);
+        return product;
     }
 
     @Override
     public void delete(Long id) {
-        var productDto = findById(id);
-        var product = mapper.map(productDto, Product.class);
+        var product = findById(id);
         productDao.delete(product);
-        adminService.track("Deleted product with id " + product.getId());
     }
 }

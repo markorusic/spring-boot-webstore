@@ -20,9 +20,27 @@ import java.util.Map;
 @Component
 public class AuthFilter implements Filter {
     
-    private final Map<AuthRole, List<String>> PRIVATE_ROUTE_PREFIX_MAP = Map.ofEntries(
-        Map.entry(AuthRole.Admin, Arrays.asList("products/save", "admins/me")),
-        Map.entry(AuthRole.Customer, Arrays.asList("customers/findActions", "customers/update", "customers/me"))
+    private final Map<AuthRole, List<String>> PROTECTED_ROUTES_MAP = Map.ofEntries(
+        Map.entry(AuthRole.Admin, Arrays.asList(
+            "admins/me",
+            "products/save",
+            "products/update",
+            "products/delete",
+            "categories/save",
+            "categories/update",
+            "categories/delete",
+            "orders/findAll",
+            "orders/findById",
+            "orders/ship"
+        )),
+        Map.entry(AuthRole.Customer, Arrays.asList(
+            "customers/findActions",
+            "customers/update",
+            "customers/me",
+            "orders/me",
+            "orders/save",
+            "orders/cancel"
+        ))
     );
 
     @Value("${jwt.header}")
@@ -43,7 +61,7 @@ public class AuthFilter implements Filter {
         var route = request.getRequestURI();
 
         var roleRouteMatches = new HashMap<AuthRole, Boolean>();
-        PRIVATE_ROUTE_PREFIX_MAP.forEach((role, paths) -> {
+        PROTECTED_ROUTES_MAP.forEach((role, paths) -> {
             roleRouteMatches.put(role, paths.stream().anyMatch(route::contains));
         });
 
@@ -51,8 +69,8 @@ public class AuthFilter implements Filter {
             try {
                 String token = request.getHeader(AUTH_HEADER);
                 authService.init(token);
-                var role = authService.getUser().getRole();
-                if (!roleRouteMatches.get(role)) {
+                var user = authService.getUser();
+                if (!roleRouteMatches.get(user.getRole())) {
                     response.setStatus(403);
                     return;
                 }

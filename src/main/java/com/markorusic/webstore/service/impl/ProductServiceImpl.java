@@ -5,7 +5,7 @@ import com.markorusic.webstore.dao.ProductPhotoDao;
 import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.domain.ProductPhoto;
-import com.markorusic.webstore.dto.product.ProductPageDto;
+import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
 import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.service.CategoryService;
@@ -42,10 +42,10 @@ public class ProductServiceImpl implements ProductService {
     private CategoryService categoryService;
 
     @Override
-    public Page<ProductPageDto> findAll(Predicate predicate, Pageable pageable) {
+    public Page<ProductPageItemDto> findAll(Predicate predicate, Pageable pageable) {
         var products = productDao.findAll(new BooleanBuilder().and(predicate), pageable);
         return new PageImpl<>(products.stream()
-                .map(product -> mapper.map(product, ProductPageDto.class))
+                .map(product -> mapper.map(product, ProductPageItemDto.class))
                 .collect(Collectors.toList()), pageable, products.getTotalElements());
     }
 

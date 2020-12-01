@@ -2,7 +2,7 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
-import com.markorusic.webstore.dto.product.ProductPageDto;
+import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
 import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.service.ProductService;
@@ -28,7 +28,7 @@ public class ProductController {
 
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting all products with pagination and search support")
-    public Page<ProductPageDto> findAll(@QuerydslPredicate(root = Product.class, bindings = ProductDao.class) Predicate predicate, Pageable pageable) {
+    public Page<ProductPageItemDto> findAll(@QuerydslPredicate(root = Product.class, bindings = ProductDao.class) Predicate predicate, Pageable pageable) {
         return productService.findAll(predicate, pageable);
     }
 

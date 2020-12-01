@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductPageDto {
+public class ProductPageItemDto {
     private Long id;
 
     private String name;

@@ -103,8 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order changeStatus(Long orderId, OrderStatus status) {
-        var order = findById(orderId);
-        order.setStatus(status);
+        var order = findById(orderId).withStatus(status);
         orderDao.save(order);
         return order;
     }

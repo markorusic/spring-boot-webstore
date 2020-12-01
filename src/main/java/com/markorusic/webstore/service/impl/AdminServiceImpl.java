@@ -48,9 +48,8 @@ public class AdminServiceImpl implements AdminService {
 
     private Admin findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
-        var admin = adminDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id.toString())));
-        return admin;
+        return adminDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id)));
     }
 
     @Override
@@ -74,7 +73,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminActionDto track(String actionType) {
+    public AdminAction track(String actionType) {
         var admin = findById(authService.getUser().getId());
         var adminAction = AdminAction.builder()
                 .actionType(actionType)
@@ -82,16 +81,13 @@ public class AdminServiceImpl implements AdminService {
                 .createdAt(LocalDateTime.now())
                 .build();
         adminActionDao.save(adminAction);
-        return mapper.map(adminAction, AdminActionDto.class);
+        return adminAction;
     }
 
     @Override
-    public Page<AdminActionDto> findActions(Predicate predicate, Pageable pageable) {
+    public Page<AdminAction> findActions(Predicate predicate, Pageable pageable) {
         var customer = getAuthenticatedAdmin();
         var customerExpression = QAdminAction.adminAction.admin.id.eq(customer.getId());
-        var adminActions = adminActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
-        return new PageImpl<>(adminActions.stream()
-                .map(adminAction -> mapper.map(adminAction, AdminActionDto.class))
-                .collect(Collectors.toList()), pageable, adminActions.getTotalElements());
+        return adminActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
     }
 }

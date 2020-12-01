@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     private ProductDao  productDao;
 
     @Autowired
-    private MappingUtils mappingUtils;
+    private MappingUtils mapper;
 
     @Override
     public Page<Category> findAll(Predicate predicate, Pageable pageable) {
@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(CategoryRequestDto categoryRequestDto) {
         var categoryDto = findById(categoryRequestDto.getId());
-        var category = mappingUtils.map(categoryDto, Category.class)
+        var category = mapper.map(categoryDto, Category.class)
                 .withName(categoryRequestDto.getName());
         categoryDao.save(category);
         return category;

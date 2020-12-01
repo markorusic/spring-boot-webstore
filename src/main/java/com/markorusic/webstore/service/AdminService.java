@@ -1,7 +1,7 @@
 package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Admin;
-import com.markorusic.webstore.dto.admin.AdminActionDto;
+import com.markorusic.webstore.domain.AdminAction;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.querydsl.core.types.Predicate;
@@ -13,7 +13,7 @@ public interface AdminService {
 
     Admin getAuthenticatedAdmin();
 
-    AdminActionDto track(String actionType);
+    AdminAction track(String actionType);
 
-    Page<AdminActionDto> findActions(Predicate predicate, Pageable pageable);
+    Page<AdminAction> findActions(Predicate predicate, Pageable pageable);
 }

@@ -10,6 +10,7 @@ import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.service.AdminService;
+import com.markorusic.webstore.util.MappingUtils;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,7 @@ public class AdminController {
     private AdminService adminService;
 
     @Autowired
-    private ModelMapper mapper;
+    private MappingUtils mapper;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "Method for authenticating admin user")
@@ -53,6 +54,7 @@ public class AdminController {
     @RequestMapping(value = "/me/actions", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting currently authenticated administrator's actions with pagination and search support")
     public Page<AdminActionDto> findAll(@QuerydslPredicate(root = AdminAction.class, bindings = AdminActionDao.class) Predicate predicate, Pageable pageable) {
-        return adminService.findActions(predicate, pageable);
+        var actions = adminService.findActions(predicate, pageable);
+        return mapper.mapPage(actions, AdminActionDto.class, pageable);
     }
 }

@@ -13,7 +13,6 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @Autowired
-    private MappingUtils mappingUtils;
+    private MappingUtils mapper;
 
     @Autowired
     private AdminService adminService;
@@ -38,15 +37,15 @@ public class CategoryController {
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting all categories with pagination and search support")
     public Page<CategoryPageDto> findAll(@QuerydslPredicate(root = Category.class, bindings = CategoryDao.class) Predicate predicate, Pageable pageable) {
-        var items = categoryService.findAll(predicate, pageable);
-        return mappingUtils.mapPage(items, CategoryPageDto.class, pageable);
+        var categories = categoryService.findAll(predicate, pageable);
+        return mapper.mapPage(categories, CategoryPageDto.class, pageable);
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     @ApiOperation(value = "Method for finding single category with all details by id")
     public CategoryDto findById(@RequestParam Long id) {
         var category = categoryService.findById(id);
-        return mappingUtils.map(category, CategoryDto.class);
+        return mapper.map(category, CategoryDto.class);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -54,7 +53,7 @@ public class CategoryController {
     public CategoryDto save(@Validated(ValidationGroup.Save.class) @RequestBody CategoryRequestDto categoryRequestDto) {
         var category = categoryService.save(categoryRequestDto);
         adminService.track("Created category with id " + category.getId());
-        return mappingUtils.map(category, CategoryDto.class);
+        return mapper.map(category, CategoryDto.class);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
@@ -62,7 +61,7 @@ public class CategoryController {
     public CategoryDto update(@Validated(ValidationGroup.Update.class) @RequestBody CategoryRequestDto categoryRequestDto) {
         var category = categoryService.update(categoryRequestDto);
         adminService.track("Updated category with id " + category.getId());
-        return mappingUtils.map(category, CategoryDto.class);
+        return mapper.map(category, CategoryDto.class);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)

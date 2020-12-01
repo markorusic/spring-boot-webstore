@@ -7,15 +7,18 @@ import com.markorusic.webstore.domain.QCustomerAction;
 import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.dto.product.ProductReviewDto;
 import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
+import com.markorusic.webstore.security.exception.ForbiddenException;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.ProductReviewService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
+import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -47,9 +50,15 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         var productDto = productService.findById(productReviewRequestDto.getProductId());
         var product = mapper.map(productDto, Product.class);
         var customer = customerService.getAuthenticatedCustomer();
+        var existingReviews = productReviewDao.findByProductIdAndCustomerId(product.getId(), customer.getId());
+
+        if (existingReviews.size() != 0) {
+            throw new SafeModeException("Cannot have more than one review per product");
+        }
+
         var review = ProductReview.builder()
                 .content(productReviewRequestDto.getContent())
-                .rating(productReviewRequestDto.getRating())
+                .rate(productReviewRequestDto.getRate())
                 .customer(customer)
                 .product(product)
                 .build();
@@ -60,35 +69,35 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
     @Override
     public ProductReviewDto update(ProductReviewRequestDto productReviewRequestDto) {
-        var productDto = productService.findById(productReviewRequestDto.getProductId());
-        var product = mapper.map(productDto, Product.class);
-        var customer = customerService.getAuthenticatedCustomer();
         var review = findById(productReviewRequestDto.getId())
-                .withContent(productReviewRequestDto.getContent())
-                .withRating(productReviewRequestDto.getRating())
-                .withCustomer(customer)
-                .withProduct(product);
+            .withContent(productReviewRequestDto.getContent())
+            .withRate(productReviewRequestDto.getRate());
+        var customer = customerService.getAuthenticatedCustomer();
+        if (review.getCustomer().getId() != customer.getId()) {
+            throw new ForbiddenException("Cannot update other customer's reviews");
+        }
         productReviewDao.save(review);
-        customerService.track(String.format("Updated review with id %s of product with id %s", review.getId(), product.getId()));
+        customerService.track(String.format("Updated review with id %s of product with id %s", review.getId(), review.getProduct().getId()));
         return mapper.map(review, ProductReviewDto.class);
     }
 
     @Override
     public void delete(Long id) {
         var review = findById(id);
+        var customer = customerService.getAuthenticatedCustomer();
         var productId = review.getProduct().getId();
+        if (review.getCustomer().getId() != customer.getId()) {
+            throw new ForbiddenException("Cannot update other customer's reviews");
+        }
         productReviewDao.delete(review);
         customerService.track(String.format("Deleted review with id %s of product with id %s", id, productId));
     }
 
     @Override
-    public Page<ProductReviewDto> findByProductId(Long productId) {
-        return null;
-//        var customer = getAuthenticatedCustomer();
-//        var customerExpression = QCustomerAction.customerAction.customer.id.eq(customer.getId());
-//        var customerActions = customerActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
-//        return new PageImpl<>(customerActions.stream()
-//                .map(customerAction -> mapper.map(customerAction, CustomerActionDto.class))
-//                .collect(Collectors.toList()), pageable, customerActions.getTotalElements());
+    public Page<ProductReviewDto> findByProductId(Long productId, Pageable pageable) {
+        var reviews = productReviewDao.findByProductId(productId, pageable);
+        return new PageImpl<>(reviews.stream()
+                .map(review -> mapper.map(review, ProductReviewDto.class))
+                .collect(Collectors.toList()), pageable, reviews.getTotalElements());
     }
 }

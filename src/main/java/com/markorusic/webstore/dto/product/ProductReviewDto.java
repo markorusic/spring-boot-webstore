@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class ProductReviewDto {
     private Long id;
 
-    private Float rating;
+    private Float rate;
 
     private String content;
 

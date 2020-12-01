@@ -33,7 +33,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    @ApiOperation(value = "Method for search single category with all details by id")
+    @ApiOperation(value = "Method for finding single category with all details by id")
     public CategoryDto findById(@RequestParam Long id) {
         return categoryService.findById(id);
     }

@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findById(Long id) {
-        Assert.notNull(id, "Parameter can't by null!");
+        Assert.notNull(id, "Product id can't by null!");
         var product = productDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Product with identifier %s not found!", id.toString())));
         return mapper.map(product, ProductDto.class);

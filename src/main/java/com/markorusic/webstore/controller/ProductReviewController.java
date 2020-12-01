@@ -1,0 +1,51 @@
+package com.markorusic.webstore.controller;
+
+import com.markorusic.webstore.dto.category.CategoryDto;
+import com.markorusic.webstore.dto.customer.CustomerDto;
+import com.markorusic.webstore.dto.customer.CustomerRequestDto;
+import com.markorusic.webstore.dto.product.ProductReviewDto;
+import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
+import com.markorusic.webstore.service.ProductReviewService;
+import com.markorusic.webstore.util.validation.ValidationGroup;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@Api(value = "Customer Api")
+@RequestMapping(path = "/product-reviews")
+public class ProductReviewController {
+    @Autowired
+    private ProductReviewService productReviewService;
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ApiOperation(value = "Method for creating new product review")
+    public ProductReviewDto save(@Validated(ValidationGroup.Save.class) @RequestBody ProductReviewRequestDto productReviewRequestDto) {
+        return productReviewService.save(productReviewRequestDto);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @ApiOperation(value = "Method for updating existing product review")
+    public ProductReviewDto update(@Validated(ValidationGroup.Update.class) @RequestBody ProductReviewRequestDto productReviewRequestDto) {
+        return productReviewService.update(productReviewRequestDto);
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Method for deleting existing product review")
+    public void delete(@RequestParam Long id) {
+        productReviewService.delete(id);
+    }
+
+    @RequestMapping(value = "/product/findById", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for finding product reviews of specific product")
+    public Page<ProductReviewDto> findByProductId(@RequestParam Long id, Pageable pageable) {
+        return productReviewService.findByProductId(id, pageable);
+    }
+
+}

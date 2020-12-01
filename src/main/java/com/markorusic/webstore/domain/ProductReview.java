@@ -17,7 +17,7 @@ public class ProductReview {
     private Long id;
 
     @Column(nullable = false)
-    private Float rating;
+    private Float rate;
 
     @Column(nullable = false)
     private String content;

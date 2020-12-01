@@ -14,17 +14,17 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProductReviewRequestDto {
 
-    @NotNull(groups = ValidationGroup.Update.class, message = "ID cannot be null")
+    @NotNull(groups = ValidationGroup.Update.class)
     private Long id;
 
     @NotNull
     @Min(1)
     @Max(10)
-    private Float rating;
+    private Float rate;
 
     @NotNull
     private String content;
 
-    @NotNull
+    @NotNull(groups = ValidationGroup.Save.class)
     private Long productId;
 }

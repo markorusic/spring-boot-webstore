@@ -40,7 +40,10 @@ public class AuthFilter implements Filter {
             "customers/me/actions",
             "orders/me",
             "orders/save",
-            "orders/cancel"
+            "orders/cancel",
+            "product-reviews/save",
+            "product-reviews/update",
+            "product-reviews/delete"
         ))
     );
 

@@ -3,6 +3,7 @@ package com.markorusic.webstore.service;
 import com.markorusic.webstore.dto.product.ProductReviewDto;
 import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductReviewService {
     ProductReviewDto save(ProductReviewRequestDto productReviewRequestDto);
@@ -11,5 +12,5 @@ public interface ProductReviewService {
 
     void delete(Long id);
 
-    Page<ProductReviewDto> findByProductId(Long productId);
+    Page<ProductReviewDto> findByProductId(Long productId, Pageable pageable);
 }

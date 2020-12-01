@@ -5,7 +5,6 @@ import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.dto.category.CategoryRequestDto;
 import com.markorusic.webstore.service.CategoryService;
-import com.markorusic.webstore.util.MappingUtils;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
@@ -27,9 +26,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private ProductDao  productDao;
-
-    @Autowired
-    private MappingUtils mapper;
 
     @Override
     public Page<Category> findAll(Predicate predicate, Pageable pageable) {
@@ -54,8 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category update(CategoryRequestDto categoryRequestDto) {
-        var categoryDto = findById(categoryRequestDto.getId());
-        var category = mapper.map(categoryDto, Category.class)
+        var category = findById(categoryRequestDto.getId())
                 .withName(categoryRequestDto.getName());
         categoryDao.save(category);
         return category;

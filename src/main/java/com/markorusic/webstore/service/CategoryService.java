@@ -1,20 +1,19 @@
 package com.markorusic.webstore.service;
 
-import com.markorusic.webstore.dto.category.CategoryDto;
-import com.markorusic.webstore.dto.category.CategoryPageDto;
+import com.markorusic.webstore.domain.Category;
 import com.markorusic.webstore.dto.category.CategoryRequestDto;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
-    Page<CategoryPageDto> findAll(Predicate predicate, Pageable pageable);
+    Page<Category> findAll(Predicate predicate, Pageable pageable);
 
-    CategoryDto findById(Long id);
+    Category findById(Long id);
 
-    CategoryDto save(CategoryRequestDto categoryRequestDto);
+    Category save(CategoryRequestDto categoryRequestDto);
 
-    CategoryDto update(CategoryRequestDto categoryRequestDto);
+    Category update(CategoryRequestDto categoryRequestDto);
 
     void delete(Long id);
 }

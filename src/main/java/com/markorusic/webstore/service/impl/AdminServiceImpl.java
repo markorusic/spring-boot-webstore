@@ -3,30 +3,26 @@ package com.markorusic.webstore.service.impl;
 import com.markorusic.webstore.dao.AdminActionDao;
 import com.markorusic.webstore.dao.AdminDao;
 import com.markorusic.webstore.domain.*;
-import com.markorusic.webstore.dto.admin.AdminActionDto;
 import com.markorusic.webstore.dto.admin.AdminDto;
-import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.security.domain.AuthRole;
 import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.service.AdminService;
+import com.markorusic.webstore.util.MappingUtils;
 import com.markorusic.webstore.util.exception.BadRequestException;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -44,7 +40,7 @@ public class AdminServiceImpl implements AdminService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private ModelMapper mapper;
+    private MappingUtils mapper;
 
     private Admin findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");

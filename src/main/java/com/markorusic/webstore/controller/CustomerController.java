@@ -7,6 +7,7 @@ import com.markorusic.webstore.dto.customer.*;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.service.CustomerService;
+import com.markorusic.webstore.util.MappingUtils;
 import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,12 +29,13 @@ public class CustomerController {
     private CustomerService customerService;
 
     @Autowired
-    private ModelMapper mapper;
+    private MappingUtils mapper;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ApiOperation(value = "Method registering new customer user")
     public CustomerDto register(@Validated @RequestBody CustomerRegistrationDto customerRegistrationDto) {
-        return customerService.register(customerRegistrationDto);
+        var customer = customerService.register(customerRegistrationDto);
+        return mapper.map(customer, CustomerDto.class);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -52,12 +54,15 @@ public class CustomerController {
     @RequestMapping(value = "/me/actions", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting currently authenticated customer's actions with pagination and search support")
     public Page<CustomerActionDto> findAll(@QuerydslPredicate(root = CustomerAction.class, bindings = CustomerActionDao.class) Predicate predicate, Pageable pageable) {
-        return customerService.findActions(predicate, pageable);
+        var actions = customerService.findActions(predicate, pageable);
+        return mapper.mapPage(actions, CustomerActionDto.class, pageable);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @ApiOperation(value = "Method for updating currently authenticated customer")
     public CustomerDto update(@Validated @RequestBody CustomerRequestDto customerRequestDto) {
-        return customerService.update(customerRequestDto);
+        var customer = customerService.update(customerRequestDto);
+        customerService.track("Updated profile info");
+        return mapper.map(customer, CustomerDto.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Customer;
+import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.dto.customer.*;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
@@ -10,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomerService {
 
-    CustomerDto update(CustomerRequestDto customerRequestDto);
+    Customer update(CustomerRequestDto customerRequestDto);
 
-    CustomerActionDto track(String actionType);
+    CustomerAction track(String actionType);
 
-    Page<CustomerActionDto> findActions(Predicate predicate, Pageable pageable);
+    Page<CustomerAction> findActions(Predicate predicate, Pageable pageable);
 
-    CustomerDto register(CustomerRegistrationDto customerRegistrationDto);
+    Customer register(CustomerRegistrationDto customerRegistrationDto);
 
     AuthResponseDto login(AuthRequestDto authRequestDto);
 

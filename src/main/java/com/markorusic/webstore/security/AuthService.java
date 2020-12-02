@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.security.exception.UnauthorizedException;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-
 @Service
+@RequiredArgsConstructor
 public class AuthService implements InitializingBean {
 
     @Value("${jwt.token-duration-hours}")
@@ -29,8 +28,7 @@ public class AuthService implements InitializingBean {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     private SecretKey key;
 
@@ -41,7 +39,7 @@ public class AuthService implements InitializingBean {
 
     public void init(String token) {
         try {
-            Claims claims = Jwts.parser()
+            var claims = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token)
                     .getBody();

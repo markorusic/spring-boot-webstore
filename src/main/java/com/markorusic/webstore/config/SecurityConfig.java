@@ -26,37 +26,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.addFilterBefore( authFilter, UsernamePasswordAuthenticationFilter.class);
         http
-                .httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/customers/login", "/customers/register").permitAll()
-                .antMatchers("customers/update",
-                        "/customers/me",
-                        "/customers/me/actions",
-                        "/categories/save",
-                        "/orders/me",
-                        "/orders/save",
-                        "/orders/cancel",
-                        "/product-reviews/save",
-                        "/product-reviews/update",
-                        "/product-reviews/delete").hasAuthority(AuthRole.Customer.toString())
-                .antMatchers(
-                        "/admins/me",
-                        "/admins/me/actions",
-                        "/products/save",
-                        "/products/update",
-                        "/products/delete",
-                        "/categories/save",
-                        "/categories/update",
-                        "/categories/delete",
-                        "/orders/findAll",
-                        "/orders/findById",
-                        "/orders/ship",
-                        "/file-upload"
-                ).hasAuthority(AuthRole.Admin.toString());
-        http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+            .httpBasic().disable()
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("customers/update",
+                    "/customers/me",
+                    "/customers/me/actions",
+                    "/categories/save",
+                    "/orders/me",
+                    "/orders/save",
+                    "/orders/cancel",
+                    "/product-reviews/save",
+                    "/product-reviews/update",
+                    "/product-reviews/delete",
+                    "/categories/save"
+            ).hasAuthority(AuthRole.Customer.toString())
+            .antMatchers(
+                    "/admins/me",
+                    "/admins/me/actions",
+                    "/products/save",
+                    "/products/update",
+                    "/products/delete",
+
+                    "/categories/update",
+                    "/categories/delete",
+                    "/orders/findAll",
+                    "/orders/findById",
+                    "/orders/ship",
+                    "/file-upload"
+            ).hasAuthority(AuthRole.Admin.toString())
+            .antMatchers("/**").permitAll();
+
+
     }
 }

@@ -3,6 +3,7 @@ package com.markorusic.webstore.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
+import com.markorusic.webstore.security.domain.AuthRole;
 import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.security.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +25,8 @@ import java.util.Date;
 @Service
 public class AuthService implements InitializingBean {
 
-    @Value("${jwt.token-duration}")
-    private Long TOKEN_DURATION;
+    @Value("${jwt.token-duration-hours}")
+    private Long TOKEN_DURATION_HOURS;
 
     @Value("${jwt.secret}")
     private String SECRET;
@@ -33,8 +35,6 @@ public class AuthService implements InitializingBean {
     private ObjectMapper objectMapper;
 
     private final Logger log = LoggerFactory.getLogger(AuthService.class);
-
-    private AuthUser user;
 
     private SecretKey key;
 
@@ -49,22 +49,21 @@ public class AuthService implements InitializingBean {
                     .setSigningKey(key)
                     .parseClaimsJws(token)
                     .getBody();
-            var values = objectMapper.readTree(claims.getSubject());
-
-            user = objectMapper.readValue(claims.getSubject(), AuthUser.class);
+            var user = objectMapper.readValue(claims.getSubject(), AuthUser.class);
+            var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             throw new UnauthorizedException();
         }
     }
 
     public AuthUser getUser() {
-        return (AuthUser) SecurityContextHolder.getContext().getAuthentication();
+        return (AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public <T> AuthResponseDto authorize(AuthUser authUser, T user) {
         var now = (new Date()).getTime();
-        var validity = new Date(now + TOKEN_DURATION);
+        var validity = new Date(now + TOKEN_DURATION_HOURS * 60 * 60 * 1000);
 
         try {
             var jws = Jwts

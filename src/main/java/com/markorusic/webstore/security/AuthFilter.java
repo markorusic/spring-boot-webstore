@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class AuthFilter implements Filter {
+public class AuthFilter extends OncePerRequestFilter { // implements Filter {
     
     private final Map<AuthRole, List<String>> PROTECTED_ROUTES_MAP = Map.ofEntries(
         Map.entry(AuthRole.Admin, Arrays.asList(
@@ -56,37 +59,79 @@ public class AuthFilter implements Filter {
     @Autowired
     private AuthService authService;
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+//    @Override
+//    public void init(FilterConfig filterConfig) throws ServletException {}
+//
+//    @Override
+//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+//        HttpServletResponse response = (HttpServletResponse) servletResponse;
+//        HttpServletRequest request = (HttpServletRequest) servletRequest;
+//        var route = request.getRequestURI();
+//
+//        var roleRouteMatches = new HashMap<AuthRole, Boolean>();
+//        PROTECTED_ROUTES_MAP.forEach((role, paths) -> {
+//            roleRouteMatches.put(role, paths.stream().anyMatch(route::contains));
+//        });
+//
+//        if (roleRouteMatches.values().stream().anyMatch(b -> b)) {
+//            try {
+//                String token = request.getHeader(AUTH_HEADER);
+//                authService.init(token);
+//                var user = authService.getUser();
+//                if (!roleRouteMatches.get(user.getRole())) {
+//                    response.setStatus(403);
+//                    return;
+//                }
+//            } catch (Exception e) {
+//                response.setStatus(401);
+//                return;
+//            }
+//        }
+//        filterChain.doFilter(request, response);
+//    }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        var route = request.getRequestURI();
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        var roleRouteMatches = new HashMap<AuthRole, Boolean>();
-        PROTECTED_ROUTES_MAP.forEach((role, paths) -> {
-            roleRouteMatches.put(role, paths.stream().anyMatch(route::contains));
-        });
-
-        if (roleRouteMatches.values().stream().anyMatch(b -> b)) {
-            try {
+        try {
+            if(request.getHeader(AUTH_HEADER) != null) {
                 String token = request.getHeader(AUTH_HEADER);
                 authService.init(token);
                 var user = authService.getUser();
-                if (!roleRouteMatches.get(user.getRole())) {
-                    response.setStatus(403);
-                    return;
-                }
-            } catch (Exception e) {
-                response.setStatus(401);
-                return;
+                var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         filterChain.doFilter(request, response);
+
+//        var route = request.getRequestURI();
+//
+//        var roleRouteMatches = new HashMap<AuthRole, Boolean>();
+//        PROTECTED_ROUTES_MAP.forEach((role, paths) -> {
+//            roleRouteMatches.put(role, paths.stream().anyMatch(route::contains));
+//        });
+//
+//        if (roleRouteMatches.values().stream().anyMatch(b -> b)) {
+//            try {
+//                String token = request.getHeader(AUTH_HEADER);
+//                authService.init(token);
+//                var user = authService.getUser();
+//                if (!roleRouteMatches.get(user.getRole())) {
+//                    response.setStatus(403);
+//                    return;
+//                }
+//            } catch (Exception e) {
+//                response.setStatus(401);
+//                return;
+//            }
+////            new UsernamePasswordAuthenticationToken(new )
+//        }
+//        filterChain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {}
+//    @Override
+//    public void destroy() {}
 }

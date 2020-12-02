@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -48,14 +49,17 @@ public class AuthService implements InitializingBean {
                     .setSigningKey(key)
                     .parseClaimsJws(token)
                     .getBody();
+            var values = objectMapper.readTree(claims.getSubject());
+
             user = objectMapper.readValue(claims.getSubject(), AuthUser.class);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             throw new UnauthorizedException();
         }
     }
 
     public AuthUser getUser() {
-        return user;
+        return (AuthUser) SecurityContextHolder.getContext().getAuthentication();
     }
 
     public <T> AuthResponseDto authorize(AuthUser authUser, T user) {

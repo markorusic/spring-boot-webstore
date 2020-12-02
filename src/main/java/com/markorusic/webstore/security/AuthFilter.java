@@ -32,7 +32,8 @@ public class AuthFilter implements Filter {
             "categories/delete",
             "orders/findAll",
             "orders/findById",
-            "orders/ship"
+            "orders/ship",
+            "file-upload"
         )),
         Map.entry(AuthRole.Customer, Arrays.asList(
             "customers/update",

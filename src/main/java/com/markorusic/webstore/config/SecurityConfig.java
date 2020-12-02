@@ -53,20 +53,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        var config = http
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .authorizeRequests()
-            .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Customer))
-                .hasAuthority(AuthRole.Customer.toString())
-            .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Admin))
-                .hasAuthority(AuthRole.Admin.toString())
-            .antMatchers("/**")
-                .permitAll();
+            .authorizeRequests();
 
+        PROTECTED_ROUTES_MAP.forEach((role, paths) -> {
+            config.antMatchers(paths).hasAuthority(role.toString());
+        });
 
+        config.antMatchers("/**").permitAll();
     }
 }

@@ -25,17 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Map<AuthRole, String[]> PROTECTED_ROUTES_MAP = Map.ofEntries(
             Map.entry(AuthRole.Admin, new String[] {
-                    "/customers/update",
-                    "/customers/me",
-                    "/customers/me/actions",
-                    "/orders/me",
-                    "/orders/save",
-                    "/orders/cancel",
-                    "/product-reviews/save",
-                    "/product-reviews/update",
-                    "/product-reviews/delete"
-            }),
-            Map.entry(AuthRole.Customer, new String[] {
                     "/admins/me",
                     "/admins/me/actions",
                     "/products/save",
@@ -48,6 +37,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/orders/findById",
                     "/orders/ship",
                     "/file-upload"
+            }),
+            Map.entry(AuthRole.Customer, new String[] {
+                    "/customers/update",
+                    "/customers/me",
+                    "/customers/me/actions",
+                    "/orders/me",
+                    "/orders/save",
+                    "/orders/cancel",
+                    "/product-reviews/save",
+                    "/product-reviews/update",
+                    "/product-reviews/delete"
             })
     );
 
@@ -60,9 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Customer)).hasAuthority(AuthRole.Customer.toString())
-                .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Admin)).hasAuthority(AuthRole.Admin.toString())
-            .antMatchers("/**").permitAll();
+            .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Customer))
+                .hasAuthority(AuthRole.Customer.toString())
+            .antMatchers(PROTECTED_ROUTES_MAP.get(AuthRole.Admin))
+                .hasAuthority(AuthRole.Admin.toString())
+            .antMatchers("/**")
+                .permitAll();
 
 
     }

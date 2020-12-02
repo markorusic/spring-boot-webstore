@@ -3,14 +3,12 @@ package com.markorusic.webstore.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
-import com.markorusic.webstore.security.domain.AuthRole;
 import com.markorusic.webstore.security.domain.AuthUser;
 import com.markorusic.webstore.security.exception.UnauthorizedException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,12 +32,10 @@ public class AuthService implements InitializingBean {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final Logger log = LoggerFactory.getLogger(AuthService.class);
-
     private SecretKey key;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
     }
 
@@ -72,7 +68,7 @@ public class AuthService implements InitializingBean {
                     .signWith(key)
                     .setExpiration(validity)
                     .compact();
-            return new AuthResponseDto(jws, user);
+            return AuthResponseDto.builder().token(jws).user(user).build();
         } catch (JsonProcessingException e) {
             throw new UnauthorizedException();
         }

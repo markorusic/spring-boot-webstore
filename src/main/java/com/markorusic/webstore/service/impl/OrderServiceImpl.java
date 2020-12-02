@@ -7,6 +7,7 @@ import com.markorusic.webstore.domain.Order;
 import com.markorusic.webstore.domain.OrderDetail;
 import com.markorusic.webstore.domain.OrderStatus;
 import com.markorusic.webstore.domain.Product;
+import com.markorusic.webstore.dto.order.OrderDetailRequestDto;
 import com.markorusic.webstore.dto.order.OrderRequestDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.service.CustomerService;
@@ -16,7 +17,6 @@ import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,20 +29,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private OrderDao orderDao;
+    private final OrderDao orderDao;
 
-    @Autowired
-    private OrderDetailDao orderDetailDao;
+    private final OrderDetailDao orderDetailDao;
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
     @Override
     public Page<Order> findAll(Predicate predicate, Pageable pageable) {
@@ -51,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order save(OrderRequestDto orderRequestDto) {
-        var productIds = orderRequestDto.getOrderDetails().stream().map(orderDetailRequestDto -> orderDetailRequestDto.getProductId()).collect(Collectors.toList());
+        var productIds = orderRequestDto.getOrderDetails().stream().map(OrderDetailRequestDto::getProductId).collect(Collectors.toList());
         var products = productDao.findByIdIn(productIds);
 
         if (productIds.size() != products.size()) {

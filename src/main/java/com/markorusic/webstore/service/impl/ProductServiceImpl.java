@@ -11,7 +11,6 @@ import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,14 +23,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
-    @Autowired
-    private ProductPhotoDao productPhotoDao;
+    private final ProductPhotoDao productPhotoDao;
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Override
     public Page<Product> findAll(Predicate predicate, Pageable pageable) {

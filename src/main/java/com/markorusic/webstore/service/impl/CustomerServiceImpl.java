@@ -18,6 +18,7 @@ import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,19 +29,16 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private CustomerDao customerDao;
+    private final CustomerDao customerDao;
 
-    @Autowired
-    private CustomerActionDao customerActionDao;
+    private final CustomerActionDao customerActionDao;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final MappingUtils mapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

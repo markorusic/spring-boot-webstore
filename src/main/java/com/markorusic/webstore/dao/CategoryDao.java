@@ -1,7 +1,6 @@
 package com.markorusic.webstore.dao;
 
 import com.markorusic.webstore.domain.Category;
-import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.domain.QCategory;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;

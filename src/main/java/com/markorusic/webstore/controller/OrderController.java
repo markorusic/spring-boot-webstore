@@ -14,7 +14,6 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -29,17 +28,13 @@ import java.util.List;
 @RequestMapping(path = "/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final MappingUtils mapper;
 
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting all orders with pagination and search support")

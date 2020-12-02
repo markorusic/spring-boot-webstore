@@ -2,7 +2,9 @@ package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.AdminActionDao;
 import com.markorusic.webstore.dao.AdminDao;
-import com.markorusic.webstore.domain.*;
+import com.markorusic.webstore.domain.Admin;
+import com.markorusic.webstore.domain.AdminAction;
+import com.markorusic.webstore.domain.QAdminAction;
 import com.markorusic.webstore.dto.admin.AdminDto;
 import com.markorusic.webstore.security.AuthService;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
@@ -15,7 +17,7 @@ import com.markorusic.webstore.util.exception.BadRequestException;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,22 +27,18 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired
-    private AdminDao adminDao;
+    private final AdminDao adminDao;
 
-    @Autowired
-    private AdminActionDao adminActionDao;
+    private final AdminActionDao adminActionDao;
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final MappingUtils mapper;
 
     private Admin findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
@@ -63,9 +61,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin getAuthenticatedAdmin() {
         var id = authService.getUser().getId();
-        var admin = adminDao.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id.toString())));
-        return admin;
+        return adminDao.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("Admin with identifier %s not found!", id)));
     }
 
     @Override

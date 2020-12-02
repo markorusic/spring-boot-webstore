@@ -9,23 +9,21 @@ import com.markorusic.webstore.service.ProductReviewService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
+@RequiredArgsConstructor
 public class ProductReviewServiceImpl implements ProductReviewService {
 
-    @Autowired
-    private ProductReviewDao productReviewDao;
+    private final ProductReviewDao productReviewDao;
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     private ProductReview findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");

@@ -54,10 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         var config = http
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             .and()
-            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

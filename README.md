@@ -1,29 +1,10 @@
 # Dokumentacija
 
-- [Opis projekta](#opis-projekta)
-- [Dizajn baze podataka](#dizajn-baze-podataka)
-- [Arhitektura projekta](#arhitektura-projekta)
-
-  - [Domain](#domain)
-  - [Dao](#dao)
-  - [Service](#service)
-  - [Dto](#dto)
-  - [Controller](#controller)
-  - [Util](#util)
-
-- [Sigurnost](#sigurnost)
-
-- [Obrada grešaka](#obrada-grešaka)
-
-- [Praćenje aktivnosti korisnika](#praćenje-aktivnosti-korisnika)
-
-- [Swaggeer API dokumentacija]("#swagger-api-dokumentacija")
-
 ## Opis projekta
 
-Projekat realizuje osnovne funkcionalnosti aplikacije za veb prodavnicu. Neke od mogućnosti su logovanje korisnika, pretraga, dodavanje, brisanje, izmena, komentarisanje, ocenjivanje postova. Takodje postovi su rasporedjeni po kategorijama, jedan post moze biti u vise kategorija.
+Projekat realizuje osnovne bekend funkcionalnosti REST API aplikacije za veb prodavnicu. Neke od mogućnosti su logovanje korisnika i administratora, CRUD akcije nad proizvodima, kategorijama, recenzijama, narudzbenicama, itd...
 
-Tehnologije korišćene u izradi ove REST API aplikacije:
+## Korišćene tehnologije
 
 - Java 11
 - Spring Boot
@@ -32,6 +13,7 @@ Tehnologije korišćene u izradi ove REST API aplikacije:
 - Querydsl
 - Lombok
 - ModelMapper
+- Spring Security
 - JSON Web Token (JWT)
 - Swagger API Docs
 
@@ -42,48 +24,49 @@ Za čuvanje podataka koršćena je MySQL baza podataka, sa sledećom strukturom:
 
 ## Arhitektura projekta
 
-Aplikacija je rasporedjena u 6 projekata, od kojih svaki predstavlja jedan sloj u celokupnoj arhitekturi aplikacije.
+Aplikacija je rasporedjena po java paketima od kojih svaki predstavlja jedan sloj u celokupnoj arhitekturi aplikacije.
 
 ### Domain
 
 Domenski sloj aplikacije predstavlja skup klasa koje opisuju strukturu, i medjusobne relacije domenskih podataka naše aplikacije.
 
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Domain
+https://github.com/markorusic/spring-boot-webstore/tree/master/src/main/java/com/markorusic/webstore/domain
 
 ### Dao
 
-Dao, odnosno Data Access Object, je sloj koji se bavi komunikacijom naše aplikacije sa bazom podataka. Struktura podataka, i relacije baze opisani su u domenskom sloju, tako da se Dao sloj oslanja na njega. Upotrebom domenskog sloja i Entity Framework Core biblioteke za SQLServer dobijamo Dao sloj.
+Dao, odnosno Data Access Object, je sloj koji se bavi komunikacijom naše aplikacije sa bazom podataka. Struktura podataka, i relacije baze opisani su u domenskom sloju, tako da se Dao sloj oslanja na njega. Upotrebom domenskog sloja i JPA interfejsa, odnosno Hibernate ORM implementacije dobijamo Dao sloj.
 
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Dao
-
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Dto
+https://github.com/markorusic/spring-boot-webstore/tree/master/src/main/java/com/markorusic/webstore/dao
 
 ### Service
 
-Servisni sloj predstavlja skup interfejsa koji opisuju biznis logiku naše aplikacije. Za svaki definisani interfejst pravimo klasu koja predstavlja stvarnu implementaciju, i u kojoj živi celokupna lokiga. Servisni sloj, odnosno njegova implementacija se oslanja na sve prehodno pomenute slojeve, kao i na druge servise, i njihovim kombinovanjem izvšava specifični zahtev. Implementacija servisnog interfejsa se ubacuje u IoC kontejner putem Dependency Injection mehanizna.
+Servisni sloj predstavlja skup interfejsa koji opisuju biznis logiku naše aplikacije. Za svaki definisani interfejst pravimo klasu koja predstavlja stvarnu implementaciju, i u kojoj živi celokupna lokiga. Servisni sloj, odnosno njegova implementacija se oslanja na sve prehodno pomenute slojeve, kao i na druge servise, i njihovim kombinovanjem izvšava specifični zahtev. Implementacija servisnog interfejsa, označava se sa ``@Service`` anotacijom, čime se ubacuje u IoC kontejner putem Dependency Injection mehanizma, kojim Spring Boot upravlja automatski.
 
-[Primer sevisnog interfejsa](https://github.com/markorusic/netcore-blog-app/tree/master/src/Service/IPostService.cs)
-[Primer implementacije servisnog interfejsa](https://github.com/markorusic/netcore-blog-app/tree/master/src/Service/Impl/PostServiceImpl.cs)
+[Primer sevisnog interfejsa](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/service/ProductService.java)
 
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Service
+[Primer implementacije servisnog interfejsa](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/service/impl/ProductServiceImpl.java)
 
-### Dto
+https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/service
 
-Dto, odnostno Data Transfer Object, prestsavlja skup klasa koje opisuju strukturu podatka koje želimo da prikažemo korisniku (klijentu) naše aplikacije. Svrha Dto klase je da strukturu odgovarajuće domenske klase prilagodi potrebama klijenta. Za mapiranje domenskih klasa u dto, korišćena je biblioteka Automapper.
+### DTO
 
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Common
+DTO, odnostno Data Transfer Object, prestsavlja skup klasa koje opisuju strukturu podatka koje želimo da prikažemo korisniku (klijentu) naše aplikacije. Svrha DTO klase je da strukturu odgovarajuće domenske klase prilagodi potrebama klijenta. Za mapiranje domenskih klasa u DTO, korišćena je biblioteka Automapper.
+
+https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/dto
 
 ### Controller
 
-Controller je glavna ulazna tačka naše aplikacije. Za razliku od ostalih slojeva, koji prestavljaju biblioteke klasa, Controller sloj se izvršava samostalno. Glavna namena Controller sloja je da pruži REST API pristup našoj aplikaciji. Pri pokretanju inicijalizuje se ceo projekat, konfiguracija, u DI kontejner se ubacuju neophodni dependecy-ji...
+Controller je glavna ulazna tačka naše aplikacije. Glavna namena Controller sloja je da otovri našu aplikaciju ka spoljnom svetu, u ovom slučaju korišćenjem REST API modela.
 
-Centralni deo Controller sloja predstavljau kontroleri. Njihov posao je da izlože definisane API endpointe preko kojih će klijenti moći da komuniciraju sa našom aplikaicjiom. Kontroleri se oslanjaju na servisni sloj za izvršavanje neophodne biznis lokige.
+Centralni deo Controller sloja predstavljau kontroleri. Njihov posao je da izlože definisane API endpointe preko kojih će klijenti moći da komuniciraju sa našom aplikaicjiom. Kontroleri se oslanjaju na servisni sloj za izvršavanje neophodne biznis lokige, kao i na DTO sloj za mapiranje domenskih objekata u DTO.
 
-https://github.com/markorusic/netcore-blog-app/tree/master/src/Api
+https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/controller
 
 ### Util
 
 Predstavlja skup klasa sa opštom namenom koje mogu biti korišćene na svim slojevima aplikacije.
+
+https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/util
 
 ## Sigurnost
 
@@ -121,4 +104,4 @@ Aktivnost korisnika mogu se pretraziti putem `api/user-activity` endpointa kreir
 
 Swaggeer API dokumentacija [inicijaluzuje](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Startup.cs#L100) se pri pokretanju Api projekta, dostupna je na `/swagger/index.html` putanji.
 
-![swagger-api-docs](images/swagger-api-docs.png)
+![swagger-api-docs](assets/swagger-api-docs.png)

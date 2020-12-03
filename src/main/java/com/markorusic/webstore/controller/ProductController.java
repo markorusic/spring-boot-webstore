@@ -2,9 +2,9 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.domain.Product;
+import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
-import com.markorusic.webstore.dto.product.ProductDto;
 import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.MappingUtils;
@@ -13,7 +13,6 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -25,14 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "Product Api")
 @RequestMapping(path = "/products")
 public class ProductController {
-    @Autowired
-    private ProductService productService;
 
-    @Autowired
-    private AdminService adminService;
+    private final ProductService productService;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final AdminService adminService;
+
+    private final MappingUtils mapper;
 
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting all products with pagination and search support")

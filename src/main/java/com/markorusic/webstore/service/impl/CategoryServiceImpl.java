@@ -10,7 +10,6 @@ import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,9 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryDao categoryDao;
+    private final CategoryDao categoryDao;
 
-    @Autowired
-    private ProductDao  productDao;
+    private final ProductDao  productDao;
 
     @Override
     public Page<Category> findAll(Predicate predicate, Pageable pageable) {

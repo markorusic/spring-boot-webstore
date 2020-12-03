@@ -9,7 +9,6 @@ import com.markorusic.webstore.util.validation.ValidationGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -20,14 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "Customer Api")
 @RequestMapping(path = "/product-reviews")
 public class ProductReviewController {
-    @Autowired
-    private ProductReviewService productReviewService;
 
-    @Autowired
-    private CustomerService customerService;
+    private final ProductReviewService productReviewService;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final CustomerService customerService;
+
+    private final MappingUtils mapper;
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "Method for creating new product review")

@@ -13,7 +13,6 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -25,14 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "Category Api")
 @RequestMapping(path = "/categories")
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final CategoryService categoryService;
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
+
+    private final MappingUtils mapper;
 
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ApiOperation(value = "Method for getting all categories with pagination and search support")

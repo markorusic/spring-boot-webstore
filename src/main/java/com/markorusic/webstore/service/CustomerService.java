@@ -2,7 +2,8 @@ package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
-import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
+import com.markorusic.webstore.dto.customer.CustomerRequestDto;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.querydsl.core.types.Predicate;

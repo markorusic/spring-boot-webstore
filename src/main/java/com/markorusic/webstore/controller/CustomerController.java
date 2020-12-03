@@ -2,8 +2,10 @@ package com.markorusic.webstore.controller;
 
 import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.domain.CustomerAction;
-import com.markorusic.webstore.dto.admin.AdminDto;
-import com.markorusic.webstore.dto.customer.*;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
+import com.markorusic.webstore.dto.customer.CustomerDto;
+import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
+import com.markorusic.webstore.dto.customer.CustomerRequestDto;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.markorusic.webstore.service.CustomerService;
@@ -12,24 +14,24 @@ import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Api(value = "Customer Api")
 @RequestMapping(path = "/customers")
 public class CustomerController {
-    @Autowired
-    private CustomerService customerService;
 
-    @Autowired
-    private MappingUtils mapper;
+    private final CustomerService customerService;
+
+    private final MappingUtils mapper;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ApiOperation(value = "Method registering new customer user")

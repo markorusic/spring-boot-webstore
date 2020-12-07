@@ -63,7 +63,7 @@ Parametri za customer login:
 
 ```js
 {
-	"email": "admin@gmail.com",
+	"email": "marko.rusic@gmail.com",
 	"password": "sifra123456"
 }
 ```

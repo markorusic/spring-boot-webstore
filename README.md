@@ -1,5 +1,61 @@
 # Dokumentacija
 
+## Uputstvo za pokretanje
+
+Na lokalnom okruženju trebalo bi imati intalirano sledeće:
+
+- Java 11
+
+- MySQL
+
+- IDE po izboru (npr IntelliJ)
+
+
+
+Povlačenje koda sa github-a:
+
+```shell
+git clone https://github.com/markorusic/spring-boot-webstore
+```
+
+Zatim bi trebalo kreirati bazu podataka na lokalnom MySQL serveru pod nazivom `spring_boot_webstore` i potom uraditi import `script.sql` fajla.
+
+
+
+Nakon toga izmeniti parametre za pristup bazi, tako da odgovaraju lokalnom okruženju, u fajlu [src/main/resources/application.properties](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/resources/application.properties).
+
+
+
+Nakon toga baza podataka i projekat bi trebalo da su pravilno inicijalizovani i projekat je moguće pokrenuti u IDE-u po izboru.
+
+
+
+Parametri za admin login:
+
+```js
+{
+	"email": "admin@gmail.com",
+	"password": "sifra123456"
+}
+```
+
+Parametri za customer login:
+
+```js
+{
+	"email": "admin@gmail.com",
+	"password": "sifra123456"
+}
+```
+
+
+
+## Insomnia API Client
+
+U razvoju projekta za potrebe testiranja REST API-ja korišćena je aplikacija [Insomnia](https://insomnia.rest/). Svaki API koji aplikacija pruža dostupan je u [assets/spring-boot-webstore-insomnia.json](https://github.com/markorusic/spring-boot-webstore/blob/master/assets/spring-boot-webstore-insomnia.json) fajlu. [Uputstvo za import insomnia fajla](https://support.insomnia.rest/article/52-importing-and-exporting-data).
+
+
+
 ## Opis projekta
 
 Projekat realizuje osnovne bekend funkcionalnosti REST API aplikacije za veb prodavnicu. Neke od mogućnosti su logovanje korisnika i administratora, CRUD akcije nad proizvodima, kategorijama, recenzijama, narudzbenicama, itd...

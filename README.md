@@ -4,6 +4,52 @@
 
 Projekat realizuje osnovne bekend funkcionalnosti REST API aplikacije za veb prodavnicu. Neke od mogućnosti su logovanje korisnika i administratora, CRUD akcije nad proizvodima, kategorijama, recenzijama, narudzbenicama, itd...
 
+## Funkcionalnosti po tipu korisnika
+
+### Neautorizovani korisnik
+
+- Registracija kao kupac
+
+- Login kao kupac
+
+- Login kao admin
+
+- Prikaz proizvoda
+
+- Prikaz revizija proizvoda
+
+- Prikaz kategorija
+
+### Kupac
+
+- Ažuriranje ličnih podataka
+
+- Prikaz izvršenih akcija u sistemu
+
+- Pravljenje nove porudžbenice
+
+- Prikaz ličnih porudžbenica
+
+- Otkazivanje ličnih porudžbenica
+
+- Dodavanje revizije proizvoda
+
+- Ažuriranje revizije proizvoda
+
+- Brisanje revizije proizvoda
+
+### Admin
+
+- CRUD nad proizvodima
+
+- CRUD nad kategorijama
+
+- Prikaz svih porudžbenica
+
+- Slanje porudžbenica
+
+- Prikaz izvršenih akcija u sistemu
+
 ## Korišćene tehnologije
 
 - Java 11
@@ -32,9 +78,9 @@ Domenski sloj aplikacije predstavlja skup klasa koje opisuju strukturu, i medjus
 
 https://github.com/markorusic/spring-boot-webstore/tree/master/src/main/java/com/markorusic/webstore/domain
 
-### Dao
+### DAO
 
-Dao, odnosno Data Access Object, je sloj koji se bavi komunikacijom naše aplikacije sa bazom podataka. Struktura podataka, i relacije baze opisani su u domenskom sloju, tako da se Dao sloj oslanja na njega. Upotrebom domenskog sloja i JPA interfejsa, odnosno Hibernate ORM implementacije dobijamo Dao sloj.
+DAO, odnosno Data Access Object, je sloj koji se bavi komunikacijom naše aplikacije sa bazom podataka. Struktura podataka, i relacije baze opisani su u domenskom sloju, tako da se Dao sloj oslanja na njega. Upotrebom domenskog sloja i JPA interfejsa, odnosno Hibernate ORM implementacije dobijamo DAO sloj.
 
 https://github.com/markorusic/spring-boot-webstore/tree/master/src/main/java/com/markorusic/webstore/dao
 
@@ -50,7 +96,11 @@ https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com
 
 ### DTO
 
-DTO, odnostno Data Transfer Object, prestsavlja skup klasa koje opisuju strukturu podatka koje želimo da prikažemo korisniku (klijentu) naše aplikacije. Svrha DTO klase je da strukturu odgovarajuće domenske klase prilagodi potrebama klijenta. Za mapiranje domenskih klasa u DTO, korišćena je biblioteka Automapper.
+DTO, odnostno Data Transfer Object, prestsavlja skup klasa koje opisuju strukturu podatka koje želimo da prikažemo korisniku (klijentu) naše aplikacije. Svrha DTO klase je da strukturu odgovarajuće domenske klase prilagodi potrebama klijenta. Za mapiranje domenskih klasa u DTO, korišćena je biblioteka [ModelMapper](http://modelmapper.org/), odnosno njena [modifikovana implementacija]([spring-boot-webstore/MappingUtils.java at master · markorusic/spring-boot-webstore · GitHub](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/util/MappingUtils.java)).
+
+Primer mapiranja domenskog objekta u DTO:
+
+![dto_mapping_example](assets/dto_mapping_example.png)
 
 https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/dto
 
@@ -70,38 +120,18 @@ https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com
 
 ## Sigurnost
 
-Sigurnost, odnosno mogućnost zaštite određenih delova aplikacije, realizovana je JWT (JSON Web Token) standardom za autentifikaciju i autorizaciju korisnika. Zaštita se vrši na nivou jednog API endpointa kontrolera.
+Sigurnost, odnosno mogućnost zaštite određenih delova aplikacije, realizovana je kroz [Spring Security]([Spring Security](https://spring.io/projects/spring-security#overview)) biblioteku i [JWT](https://jwt.io/) (JSON Web Token) standard za autentifikaciju i autorizaciju korisnika. 
 
-Autentifikacija korisnika vrši se preko [AuthController-a](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Controllers/AuthController.cs). Biznis logika neophodna za autentifikaciju i dohvatanje trenutnog korisnika apstraktovana je u [AuthSerivce](https://github.com/markorusic/netcore-blog-app/blob/master/src/Service/Impl/AuthServiceImpl.cs).
+Logika za sigurnost aplikacije smeštena je u [security]([spring-boot-webstore/AuthFilter.java at master · markorusic/spring-boot-webstore · GitHub](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/security/AuthFilter.java)) paket, dok se inicijalizacija i zaštita dešava u [globalnoj konfiguracionoj klasi]([spring-boot-webstore/SecurityConfig.java at master · markorusic/spring-boot-webstore · GitHub](https://github.com/markorusic/spring-boot-webstore/blob/master/src/main/java/com/markorusic/webstore/config/SecurityConfig.java)).
 
-Autorizacija korisnika dešava se na nivou role. Postoje dva tipa korisničkih rola, korisnik i admin. Api-jevi za pretrage podataka su javni, medjutim oni koji se bave izmenom podataka zaštićeni su. Korisnik sa rolom korisnik može pristupiti Api-jevima za dodavanje, izmenu i brisanje postova, komentara i ocena. Korisnik sa rolom admin može pristupiti delu aplikaciej koji se bavi administracijom kategorija.
+Autorizacija korisnika vrši se na nivou role, po sistemu "black liste". Postoje dva tipa korisničkih rola, kupac i admin.
 
-Primer zaštite API endpointa:
+Zaštita API endpointa:
 
-![user_autorize](images/user_autorize.png)
-
-## Obrada grešaka
-
-Obrada grešaka dešava se na globalnom nivou putem [ExceptionMiddleware](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Middlewares/ExceptionMiddleware.cs) klase, koja se [inicijaluzuje](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Startup.cs#L87) pri pokretanju Api projekta u zajedno sa ostalim komponentama.
-
-Time imamo mogućnost da iz npr servisnog sloja izbacujemo izuzetke koje ne moramo pojedinačno, i ručno obrađivati, jer se o tome brine globalni ExceptionMiddleware. Primer izuzetaka u [implementaciji](https://github.com/markorusic/netcore-blog-app/blob/master/src/Service/Impl/PostServiceImpl.cs) `IPostSerivce`-a.
-
-![post_service_exceptions](images/post_service_exceptions.png)
-
-## Praćenje aktivnosti korisnika
-
-Aktivnosti ulogovanog korisnika koje menjaju stanje aplikacije se prate i zapisuju u bazu podataka. Logika praćenja aktivnosti apstraktovana je u [UserActivityService](https://github.com/markorusic/netcore-blog-app/blob/master/src/Service/Impl/UserActivityImpl.cs).
-
-Primer zapisivanja aktivnosti korisnika:
-
-```cs
-_userActivityService.Track($"Created rate on post({postId}): {rate.Value}");
-```
-
-Aktivnost korisnika mogu se pretraziti putem `api/user-activity` endpointa kreiranog u [UserActivityController-u](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Controllers/UserActivityController.cs).
+![auth_config](assets/auth_config.png)
 
 ## Swaggeer API dokumentacija
 
-Swaggeer API dokumentacija [inicijaluzuje](https://github.com/markorusic/netcore-blog-app/blob/master/src/Api/Startup.cs#L100) se pri pokretanju Api projekta, dostupna je na `/swagger/index.html` putanji.
+Swaggeer API dokumentacija dostupna je na `/swagger-ui.html` putanji.
 
 ![swagger-api-docs](assets/swagger-api-docs.png)

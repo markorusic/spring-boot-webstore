@@ -1,5 +1,25 @@
 # Dokumentacija
 
+- [Dokumentacija](#dokumentacija)
+	- [Uputstvo za pokretanje](#uputstvo-za-pokretanje)
+	- [Insomnia API Client](#insomnia-api-client)
+	- [Opis projekta](#opis-projekta)
+	- [Funkcionalnosti po tipu korisnika](#funkcionalnosti-po-tipu-korisnika)
+		- [Neautorizovani korisnik](#neautorizovani-korisnik)
+		- [Kupac](#kupac)
+		- [Admin](#admin)
+	- [Korišćene tehnologije](#korišćene-tehnologije)
+	- [Dizajn baze podataka](#dizajn-baze-podataka)
+	- [Arhitektura projekta](#arhitektura-projekta)
+		- [Domain](#domain)
+		- [DAO](#dao)
+		- [Service](#service)
+		- [DTO](#dto)
+		- [Controller](#controller)
+		- [Util](#util)
+	- [Sigurnost](#sigurnost)
+	- [Swaggeer API dokumentacija](#swaggeer-api-dokumentacija)
+
 ## Uputstvo za pokretanje
 
 Na lokalnom okruženju trebalo bi imati intalirano sledeće:

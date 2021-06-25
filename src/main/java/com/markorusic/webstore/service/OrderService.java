@@ -16,7 +16,9 @@ public interface OrderService {
 
     List<Order> findCustomerOrders();
 
-    Order changeStatus(Long orderId, OrderStatus status);
-
     Order findById(Long id);
+
+    Order cancelOrder(Long id);
+
+    Order shipOrder(Long id);
 }

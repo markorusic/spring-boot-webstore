@@ -68,7 +68,7 @@ public class OrderController {
     @RequestMapping(value = "/cancel", method = RequestMethod.PUT)
     @ApiOperation(value = "Method for canceling order")
     public OrderDto cancelOrder(@RequestParam Long id) {
-        var order = orderService.changeStatus(id, OrderStatus.Canceled);
+        var order = orderService.cancelOrder(id);
         customerService.track("Canceled order with id " + order.getId());
         return mapper.map(order, OrderDto.class);
     }
@@ -76,7 +76,7 @@ public class OrderController {
     @RequestMapping(value = "/ship", method = RequestMethod.PUT)
     @ApiOperation(value = "Method for shipping order")
     public OrderDto shipOrder(@RequestParam Long id) {
-        var order = orderService.changeStatus(id, OrderStatus.Shipped);
+        var order = orderService.shipOrder(id);
         adminService.track("Shipped order with id " + order.getId());
         return mapper.map(order, OrderDto.class);
     }

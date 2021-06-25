@@ -14,6 +14,7 @@ import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.OrderService;
 import com.markorusic.webstore.util.exception.BadRequestException;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
+import com.markorusic.webstore.util.exception.SafeModeException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order save(OrderRequestDto orderRequestDto) {
+        if (orderRequestDto.getOrderDetails().size() == 0) {
+            throw new BadRequestException("Order has no items.");
+        }
         var productIds = orderRequestDto.getOrderDetails().stream().map(OrderDetailRequestDto::getProductId).collect(Collectors.toList());
         var products = productDao.findByIdIn(productIds);
 
@@ -96,17 +100,33 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.findByCustomerId(customerId);
     }
 
-    @Override
-    public Order changeStatus(Long orderId, OrderStatus status) {
-        var order = findById(orderId).withStatus(status);
-        orderDao.save(order);
-        return order;
-    }
 
     @Override
     public Order findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
         return orderDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Order with identifier %s not found!", id)));
+    }
+
+    @Override
+    public Order cancelOrder(Long id) {
+        var order = findById(id);
+        if (order.getStatus() == OrderStatus.Shipped) {
+            throw new SafeModeException("Cannot cancel shipped order");
+        }
+        order.withStatus(OrderStatus.Canceled);
+        orderDao.save(order);
+        return order;
+    }
+
+    @Override
+    public Order shipOrder(Long id) {
+        var order = findById(id);
+        if (order.getStatus() == OrderStatus.Canceled) {
+            throw new SafeModeException("Cannot ship canceled order");
+        }
+        order.withStatus(OrderStatus.Shipped);
+        orderDao.save(order);
+        return order;
     }
 }

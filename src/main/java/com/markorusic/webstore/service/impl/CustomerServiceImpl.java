@@ -52,7 +52,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer update(CustomerRequestDto customerRequestDto) {
         var customer = findById(authService.getUser().getId())
-                .withEmail(customerRequestDto.getEmail())
                 .withFirstName(customerRequestDto.getFirstName())
                 .withLastName(customerRequestDto.getLastName());
         customerDao.save(customer);

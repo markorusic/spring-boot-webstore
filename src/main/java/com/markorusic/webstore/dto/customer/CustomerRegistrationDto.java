@@ -1,5 +1,6 @@
 package com.markorusic.webstore.dto.customer;
 
+import com.markorusic.webstore.util.validation.ValidEmail;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -11,4 +12,9 @@ public class CustomerRegistrationDto extends CustomerRequestDto {
     @NotNull
     @Size(min = 6, max = 20)
     private String password;
+
+
+    @NotNull
+    @ValidEmail
+    private String email;
 }

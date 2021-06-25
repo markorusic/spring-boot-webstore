@@ -1,6 +1,5 @@
 package com.markorusic.webstore.dto.customer;
 
-import com.markorusic.webstore.util.validation.ValidEmail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +15,4 @@ public class CustomerRequestDto {
 
     @NotNull
     private String lastName;
-
-    @NotNull
-    @ValidEmail
-    private String email;
 }

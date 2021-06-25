@@ -23,6 +23,9 @@ public class Product {
 
     private String photo;
 
+    @Lob
+    private String description;
+
     @ManyToOne()
     private Category category;
 

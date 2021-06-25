@@ -54,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
                 .withName(productRequestDto.getName())
                 .withPrice(productRequestDto.getPrice())
                 .withPhoto(productRequestDto.getPhoto())
+                .withDescription(productRequestDto.getDescription())
                 .withCategory(category);
     }
 

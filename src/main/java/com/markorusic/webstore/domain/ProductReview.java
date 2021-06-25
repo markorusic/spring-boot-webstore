@@ -20,6 +20,7 @@ public class ProductReview {
     @Column(nullable = false)
     private Float rate;
 
+    @Lob
     @Column(nullable = false)
     private String content;
 

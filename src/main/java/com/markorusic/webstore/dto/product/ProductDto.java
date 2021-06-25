@@ -20,6 +20,8 @@ public class ProductDto {
 
     private String photo;
 
+    private String description;
+
     private List<ProductPhotoDto> photos;
 
     private CategoryPageDto category;

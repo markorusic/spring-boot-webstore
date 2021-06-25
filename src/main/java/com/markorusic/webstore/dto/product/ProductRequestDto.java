@@ -24,6 +24,9 @@ public class ProductRequestDto {
     @NotNull(message = "photo cannot be null")
     private String photo;
 
+    @NotNull(message = "description cannot be null")
+    private String description;
+
     @NotNull(message = "categoryId cannot be null")
     private Long categoryId;
 

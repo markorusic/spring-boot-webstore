@@ -40,6 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category save(CategoryRequestDto categoryRequestDto) {
         var category = Category.builder()
                 .name(categoryRequestDto.getName())
+                .photo(categoryRequestDto.getPhoto())
                 .build();
         categoryDao.save(category);
         return category;
@@ -48,7 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(CategoryRequestDto categoryRequestDto) {
         var category = findById(categoryRequestDto.getId())
-                .withName(categoryRequestDto.getName());
+                .withName(categoryRequestDto.getName())
+                .withPhoto(categoryRequestDto.getPhoto());
         categoryDao.save(category);
         return category;
     }

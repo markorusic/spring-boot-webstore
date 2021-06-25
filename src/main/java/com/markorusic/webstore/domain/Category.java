@@ -18,7 +18,11 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String photo;
 
     @OneToMany(mappedBy = "category")
     private List<Product> products;

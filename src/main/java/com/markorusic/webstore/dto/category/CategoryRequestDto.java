@@ -18,4 +18,7 @@ public class CategoryRequestDto {
     @NotNull(message = "name cannot be null")
     private String name;
 
+    @NotNull(message = "photo cannot be null")
+    private String photo;
+
 }

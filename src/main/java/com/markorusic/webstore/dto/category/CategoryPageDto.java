@@ -11,4 +11,6 @@ public class CategoryPageDto {
     private Long id;
 
     private String name;
+
+    private String photo;
 }

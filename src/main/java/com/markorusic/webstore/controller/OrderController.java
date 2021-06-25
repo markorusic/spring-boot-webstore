@@ -54,7 +54,7 @@ public class OrderController {
     @ApiOperation(value = "Method for creating new order")
     public OrderDto save(@Validated @RequestBody OrderRequestDto orderRequestDto) {
         var order = orderService.save(orderRequestDto);
-        customerService.track("Created order with id q" + order.getId());
+        customerService.track("Created order with id " + order.getId());
         return mapper.map(order, OrderDto.class);
     }
 

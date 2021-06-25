@@ -4,6 +4,7 @@ import com.markorusic.webstore.dao.ProductDao;
 import com.markorusic.webstore.dao.ProductPhotoDao;
 import com.markorusic.webstore.domain.Product;
 import com.markorusic.webstore.domain.ProductPhoto;
+import com.markorusic.webstore.dto.product.ProductPageItemDto;
 import com.markorusic.webstore.dto.product.ProductRequestDto;
 import com.markorusic.webstore.service.CategoryService;
 import com.markorusic.webstore.service.ProductService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +41,11 @@ public class ProductServiceImpl implements ProductService {
         Assert.notNull(id, "Product id can't by null!");
         return productDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Product with identifier %s not found!", id)));
+    }
+
+    @Override
+    public List<Product> findByIds(List<Long> ids) {
+        return productDao.findByIdIn(ids);
     }
 
     private Product prepareProduct(Product product, ProductRequestDto productRequestDto) {

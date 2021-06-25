@@ -19,6 +19,8 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Api(value = "Product Api")
@@ -43,6 +45,13 @@ public class ProductController {
     public ProductDto findById(@RequestParam Long id) {
         var product = productService.findById(id);
         return mapper.map(product, ProductDto.class);
+    }
+
+    @RequestMapping(value = "/findByIds", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for search multiple products with basic details by ids")
+    public List<ProductPageItemDto> findById(@RequestParam List<Long> ids) {
+        var products = productService.findByIds(ids);
+        return mapper.mapList(products, ProductPageItemDto.class);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)

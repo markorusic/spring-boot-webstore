@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ProductReviewServiceImpl implements ProductReviewService {
@@ -44,6 +46,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
                 .rate(productReviewRequestDto.getRate())
                 .customer(customer)
                 .product(product)
+                .updatedAt(LocalDateTime.now())
                 .build();
         productReviewDao.save(review);
         return review;
@@ -53,7 +56,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     public ProductReview update(ProductReviewRequestDto productReviewRequestDto) {
         var review = findById(productReviewRequestDto.getId())
             .withContent(productReviewRequestDto.getContent())
-            .withRate(productReviewRequestDto.getRate());
+            .withRate(productReviewRequestDto.getRate())
+            .withUpdatedAt(LocalDateTime.now());
         var customer = customerService.getAuthenticatedCustomer();
         if (!review.getCustomer().getId().equals(customer.getId())) {
             throw new ForbiddenException("Cannot update other customer's reviews");

@@ -3,6 +3,7 @@ package com.markorusic.webstore.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class ProductReview {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;

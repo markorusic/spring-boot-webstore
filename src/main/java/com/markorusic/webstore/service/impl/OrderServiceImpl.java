@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
                 .note(orderRequestDto.getNote())
                 .shippingAddress(orderRequestDto.getShippingAddress())
                 .status(OrderStatus.Pending)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         orderDao.save(order);

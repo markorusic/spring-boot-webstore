@@ -2,6 +2,7 @@ package com.markorusic.webstore.domain;
 
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -22,6 +23,9 @@ public class Order {
 
     @Column(nullable = false)
     private OrderStatus status;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(optional = false)
     private Customer customer;

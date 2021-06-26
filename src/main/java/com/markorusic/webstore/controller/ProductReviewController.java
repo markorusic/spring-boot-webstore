@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Api(value = "Customer Api")
@@ -54,6 +56,13 @@ public class ProductReviewController {
     public Page<ProductReviewDto> findByProductId(@RequestParam Long id, Pageable pageable) {
         var reviews = productReviewService.findByProductId(id, pageable);
         return mapper.mapPage(reviews, ProductReviewDto.class, pageable);
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for finding customer's product reviews")
+    public List<ProductReviewDto> findCustomerReviews() {
+        var reviews = productReviewService.findCustomerReviews();
+        return mapper.mapList(reviews, ProductReviewDto.class);
     }
 
 }

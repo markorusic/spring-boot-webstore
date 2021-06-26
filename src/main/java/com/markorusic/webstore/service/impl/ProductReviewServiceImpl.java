@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +75,12 @@ public class ProductReviewServiceImpl implements ProductReviewService {
             throw new ForbiddenException("Cannot update other customer's reviews");
         }
         productReviewDao.delete(review);
+    }
+
+    @Override
+    public List<ProductReview> findCustomerReviews() {
+        var customer = customerService.getAuthenticatedCustomer();
+        return productReviewDao.findByCustomerId(customer.getId());
     }
 
     @Override

@@ -10,5 +10,7 @@ import java.util.List;
 public interface ProductReviewDao extends JpaRepository<ProductReview, Long> {
     Page<ProductReview> findByProductId(Long productId, Pageable pageable);
 
+    List<ProductReview> findByCustomerId(Long productId);
+
     List<ProductReview> findByProductIdAndCustomerId(Long productId, Long customerId);
 }

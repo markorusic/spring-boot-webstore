@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findCustomerOrders() {
         var customerId = authService.getUser().getId();
-        return orderDao.findByCustomerId(customerId);
+        return orderDao.findByCustomerIdOrderByCreatedAtDesc(customerId);
     }
 
 
@@ -112,11 +112,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order cancelOrder(Long id) {
+        var customerId = authService.getUser().getId();
         var order = findById(id);
+
+        if (!order.getCustomer().getId().equals(customerId)) {
+            throw new BadRequestException("You can only cancel your orders");
+        }
         if (order.getStatus() == OrderStatus.Shipped) {
             throw new SafeModeException("Cannot cancel shipped order");
         }
-        order.withStatus(OrderStatus.Canceled);
+
+        order.setStatus(OrderStatus.Canceled);
         orderDao.save(order);
         return order;
     }
@@ -127,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getStatus() == OrderStatus.Canceled) {
             throw new SafeModeException("Cannot ship canceled order");
         }
-        order.withStatus(OrderStatus.Shipped);
+        order.setStatus(OrderStatus.Shipped);
         orderDao.save(order);
         return order;
     }

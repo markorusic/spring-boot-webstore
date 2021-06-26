@@ -13,7 +13,7 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import java.util.List;
 
 public interface OrderDao extends JpaRepository<Order, Long>, QuerydslPredicateExecutor<Order>, QuerydslBinderCustomizer<QOrder> {
-    List<Order> findByCustomerId(Long customerId);
+    List<Order> findByCustomerIdOrderByCreatedAtDesc(Long customerId);
 
     @Override
     default void customize(QuerydslBindings bindings, QOrder root) {

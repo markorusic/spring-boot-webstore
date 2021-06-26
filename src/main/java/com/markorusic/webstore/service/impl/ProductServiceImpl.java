@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,8 @@ public class ProductServiceImpl implements ProductService {
                 .withPrice(productRequestDto.getPrice())
                 .withPhoto(productRequestDto.getPhoto())
                 .withDescription(productRequestDto.getDescription())
-                .withCategory(category);
+                .withCategory(category)
+                .withCreatedAt(LocalDateTime.now());
     }
 
     @Transactional

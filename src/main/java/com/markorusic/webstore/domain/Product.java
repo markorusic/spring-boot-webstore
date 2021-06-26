@@ -2,6 +2,7 @@ package com.markorusic.webstore.domain;
 
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -25,6 +26,8 @@ public class Product {
 
     @Lob
     private String description;
+
+    private LocalDateTime createdAt;
 
     @ManyToOne()
     private Category category;

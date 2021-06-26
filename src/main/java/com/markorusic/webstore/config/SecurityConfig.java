@@ -47,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/orders/cancel",
                     "/product-reviews/save",
                     "/product-reviews/update",
-                    "/product-reviews/delete"
+                    "/product-reviews/delete",
+                    "/product-reviews/me"
             })
     );
 

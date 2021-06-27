@@ -2,10 +2,7 @@ package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
-import com.markorusic.webstore.dto.customer.AdminCustomerRequestDto;
-import com.markorusic.webstore.dto.customer.CustomerDto;
-import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
-import com.markorusic.webstore.dto.customer.CustomerRequestDto;
+import com.markorusic.webstore.dto.customer.*;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
 import com.markorusic.webstore.security.domain.AuthResponseDto;
 import com.querydsl.core.types.Predicate;
@@ -33,4 +30,6 @@ public interface CustomerService {
     Customer save(AdminCustomerRequestDto adminCustomerRequestDto);
 
     Customer adminUpdate(AdminCustomerRequestDto adminCustomerRequestDto);
+
+    Page<CustomerAction> findCustomerActions(Long id, Predicate predicate, Pageable pageable);
 }

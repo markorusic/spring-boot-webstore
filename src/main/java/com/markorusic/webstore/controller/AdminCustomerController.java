@@ -1,8 +1,11 @@
 package com.markorusic.webstore.controller;
 
+import com.markorusic.webstore.dao.CustomerActionDao;
 import com.markorusic.webstore.dao.CustomerDao;
 import com.markorusic.webstore.domain.Customer;
+import com.markorusic.webstore.domain.CustomerAction;
 import com.markorusic.webstore.dto.customer.AdminCustomerRequestDto;
+import com.markorusic.webstore.dto.customer.CustomerActionDto;
 import com.markorusic.webstore.dto.customer.CustomerDto;
 import com.markorusic.webstore.service.AdminService;
 import com.markorusic.webstore.service.CustomerService;
@@ -58,5 +61,15 @@ public class AdminCustomerController {
         var customer = customerService.adminUpdate(adminCustomerRequestDto);
         adminService.track("Updated customer with id " + customer.getId());
         return mapper.map(customer, CustomerDto.class);
+    }
+
+    @RequestMapping(value = "/findActions", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for finding customer's actions with pagination and search support")
+    public Page<CustomerActionDto> findCustomerActions(
+            @RequestParam Long id,
+            @QuerydslPredicate(root = CustomerAction.class, bindings = CustomerActionDao.class) Predicate predicate, Pageable pageable
+    ) {
+        var actions = customerService.findCustomerActions(id, predicate, pageable);
+        return mapper.mapPage(actions, CustomerActionDto.class, pageable);
     }
 }

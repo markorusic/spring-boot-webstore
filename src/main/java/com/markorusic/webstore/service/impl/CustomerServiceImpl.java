@@ -86,6 +86,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Page<CustomerAction> findCustomerActions(Long id, Predicate predicate, Pageable pageable) {
+        var customer = findById(id);
+        var customerExpression = QCustomerAction.customerAction.customer.id.eq(customer.getId());
+        return customerActionDao.findAll(new BooleanBuilder().and(predicate).and(customerExpression), pageable);
+    }
+
+    @Override
     public Customer update(CustomerRequestDto customerRequestDto) {
         var customer = findById(authService.getUser().getId())
                 .withFirstName(customerRequestDto.getFirstName())

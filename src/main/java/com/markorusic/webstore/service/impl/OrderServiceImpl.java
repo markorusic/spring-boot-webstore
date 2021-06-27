@@ -128,12 +128,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order shipOrder(Long id) {
+    public Order changeStatus(Long id, OrderStatus status) {
         var order = findById(id);
-        if (order.getStatus() == OrderStatus.Canceled) {
-            throw new SafeModeException("Cannot ship canceled order");
-        }
-        order.setStatus(OrderStatus.Shipped);
+        order.setStatus(status);
         orderDao.save(order);
         return order;
     }

@@ -20,5 +20,5 @@ public interface OrderService {
 
     Order cancelOrder(Long id);
 
-    Order shipOrder(Long id);
+    Order changeStatus(Long id, OrderStatus status);
 }

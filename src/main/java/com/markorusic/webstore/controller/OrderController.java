@@ -73,11 +73,11 @@ public class OrderController {
         return mapper.map(order, OrderDto.class);
     }
 
-    @RequestMapping(value = "/ship", method = RequestMethod.PUT)
-    @ApiOperation(value = "Method for shipping order")
-    public OrderDto shipOrder(@RequestParam Long id) {
-        var order = orderService.shipOrder(id);
-        adminService.track("Shipped order with id " + order.getId());
+    @RequestMapping(value = "/changeStatus", method = RequestMethod.PUT)
+    @ApiOperation(value = "Method for changing order status")
+    public OrderDto changeStatus(@RequestParam Long id, @RequestParam OrderStatus status) {
+        var order = orderService.changeStatus(id, status);
+        adminService.track(String.format("Changed status of order %s to %s" , order.getId().toString(), order.getStatus().toString()));
         return mapper.map(order, OrderDto.class);
     }
 }

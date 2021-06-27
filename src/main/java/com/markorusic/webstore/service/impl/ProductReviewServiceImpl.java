@@ -2,6 +2,7 @@ package com.markorusic.webstore.service.impl;
 
 import com.markorusic.webstore.dao.ProductReviewDao;
 import com.markorusic.webstore.domain.ProductReview;
+import com.markorusic.webstore.dto.product.ProductReviewDto;
 import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
 import com.markorusic.webstore.security.exception.ForbiddenException;
 import com.markorusic.webstore.service.CustomerService;
@@ -9,6 +10,8 @@ import com.markorusic.webstore.service.ProductReviewService;
 import com.markorusic.webstore.service.ProductService;
 import com.markorusic.webstore.util.exception.ResourceNotFoundException;
 import com.markorusic.webstore.util.exception.SafeModeException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +84,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
     public List<ProductReview> findCustomerReviews() {
         var customer = customerService.getAuthenticatedCustomer();
         return productReviewDao.findByCustomerId(customer.getId());
+    }
+
+    @Override
+    public Page<ProductReview> findAll(Predicate predicate, Pageable pageable) {
+        return productReviewDao.findAll(new BooleanBuilder().and(predicate), pageable);
     }
 
     @Override

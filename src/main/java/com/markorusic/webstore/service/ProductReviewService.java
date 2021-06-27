@@ -2,6 +2,7 @@ package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.ProductReview;
 import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
+import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface ProductReviewService {
     void delete(Long id);
 
     List<ProductReview> findCustomerReviews();
+
+    Page<ProductReview> findAll(Predicate predicate, Pageable pageable);
 }

@@ -1,16 +1,20 @@
 package com.markorusic.webstore.controller;
 
+import com.markorusic.webstore.dao.ProductReviewDao;
+import com.markorusic.webstore.domain.ProductReview;
 import com.markorusic.webstore.dto.product.ProductReviewDto;
 import com.markorusic.webstore.dto.product.ProductReviewRequestDto;
 import com.markorusic.webstore.service.CustomerService;
 import com.markorusic.webstore.service.ProductReviewService;
 import com.markorusic.webstore.util.MappingUtils;
 import com.markorusic.webstore.util.validation.ValidationGroup;
+import com.querydsl.core.types.Predicate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +46,13 @@ public class ProductReviewController {
         var review = productReviewService.update(productReviewRequestDto);
         customerService.track(String.format("Updated review with id %s of product with id %s", review.getId(), review.getProduct().getId()));
         return mapper.map(review, ProductReviewDto.class);
+    }
+
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @ApiOperation(value = "Method for getting all product reviews with pagination and search support")
+    public Page<ProductReviewDto> findAll(@QuerydslPredicate(root = ProductReview.class, bindings = ProductReviewDao.class) Predicate predicate, Pageable pageable) {
+        var products = productReviewService.findAll(predicate, pageable);
+        return mapper.mapPage(products, ProductReviewDto.class, pageable);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)

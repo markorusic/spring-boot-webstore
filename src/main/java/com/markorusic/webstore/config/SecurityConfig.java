@@ -37,6 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/orders/findById",
                     "/orders/changeStatus",
                     "/product-reviews/findAll",
+                    "/admin/customers/findAll",
+                    "/admin/customers/findById",
+                    "/admin/customers/update",
+                    "/admin/customers/save",
                     "/file-upload"
             }),
             Map.entry(AuthRole.Customer, new String[] {

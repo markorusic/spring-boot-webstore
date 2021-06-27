@@ -2,6 +2,8 @@ package com.markorusic.webstore.service;
 
 import com.markorusic.webstore.domain.Customer;
 import com.markorusic.webstore.domain.CustomerAction;
+import com.markorusic.webstore.dto.customer.AdminCustomerRequestDto;
+import com.markorusic.webstore.dto.customer.CustomerDto;
 import com.markorusic.webstore.dto.customer.CustomerRegistrationDto;
 import com.markorusic.webstore.dto.customer.CustomerRequestDto;
 import com.markorusic.webstore.security.domain.AuthRequestDto;
@@ -23,4 +25,12 @@ public interface CustomerService {
     AuthResponseDto login(AuthRequestDto authRequestDto);
 
     Customer getAuthenticatedCustomer();
+
+    Page<Customer> findAll(Predicate predicate, Pageable pageable);
+
+    Customer findById(Long id);
+
+    Customer save(AdminCustomerRequestDto adminCustomerRequestDto);
+
+    Customer adminUpdate(AdminCustomerRequestDto adminCustomerRequestDto);
 }

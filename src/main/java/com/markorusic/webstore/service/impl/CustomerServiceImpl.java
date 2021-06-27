@@ -43,10 +43,46 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Customer findById(Long id) {
+    private void checkEmailAvailability(String email) {
+        var existingCustomer = customerDao.findByEmail(email);
+        if (existingCustomer != null) {
+            throw new SafeModeException(String.format("Customer with %s email already exists!", email));
+        }
+    }
+
+    @Override
+    public Customer findById(Long id) {
         Assert.notNull(id, "Parameter can't by null!");
         return customerDao.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Customer with identifier %s not found!", id)));
+    }
+
+    @Override
+    public Customer save(AdminCustomerRequestDto adminCustomerRequestDto) {
+        checkEmailAvailability(adminCustomerRequestDto.getEmail());
+        var customer = Customer.builder()
+                .email(adminCustomerRequestDto.getEmail())
+                .firstName(adminCustomerRequestDto.getFirstName())
+                .lastName(adminCustomerRequestDto.getLastName())
+                .password(adminCustomerRequestDto.getPassword())
+                .build();
+        customerDao.save(customer);
+        return customer;
+    }
+
+    @Override
+    public Customer adminUpdate(AdminCustomerRequestDto adminCustomerRequestDto) {
+        var customer = findById(adminCustomerRequestDto.getId());
+        if (!customer.getEmail().equals(adminCustomerRequestDto.getEmail())) {
+            checkEmailAvailability(adminCustomerRequestDto.getEmail());
+        }
+        customer = findById(adminCustomerRequestDto.getId())
+                .withEmail(adminCustomerRequestDto.getEmail())
+                .withFirstName(adminCustomerRequestDto.getFirstName())
+                .withLastName(adminCustomerRequestDto.getLastName());
+
+        customerDao.save(customer);
+        return customer;
     }
 
     @Override
@@ -79,10 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer register(CustomerRegistrationDto customerRegistrationDto) {
-        var existingCustomer = customerDao.findByEmail(customerRegistrationDto.getEmail());
-        if (existingCustomer != null) {
-            throw new SafeModeException(String.format("Customer with %s email already exists!", customerRegistrationDto.getEmail()));
-        }
+        checkEmailAvailability(customerRegistrationDto.getEmail());
         var customer = Customer.builder()
                 .email(customerRegistrationDto.getEmail())
                 .firstName(customerRegistrationDto.getFirstName())
@@ -108,5 +141,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getAuthenticatedCustomer() {
         return findById(authService.getUser().getId());
+    }
+
+    @Override
+    public Page<Customer> findAll(Predicate predicate, Pageable pageable) {
+        return customerDao.findAll(new BooleanBuilder().and(predicate), pageable);
     }
 }

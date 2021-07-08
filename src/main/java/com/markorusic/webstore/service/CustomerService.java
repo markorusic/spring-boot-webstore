@@ -31,5 +31,5 @@ public interface CustomerService {
 
     Customer adminUpdate(AdminCustomerRequestDto adminCustomerRequestDto);
 
-    Page<CustomerAction> findCustomerActions(Long id, Predicate predicate, Pageable pageable);
+    Page<CustomerAction> findCustomerActions(Predicate predicate, Pageable pageable);
 }

@@ -21,6 +21,7 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
 @Api(value = "Admin Customer Api")
@@ -66,10 +67,9 @@ public class AdminCustomerController {
     @RequestMapping(value = "/findActions", method = RequestMethod.GET)
     @ApiOperation(value = "Method for finding customer's actions with pagination and search support")
     public Page<CustomerActionDto> findCustomerActions(
-            @RequestParam Long id,
             @QuerydslPredicate(root = CustomerAction.class, bindings = CustomerActionDao.class) Predicate predicate, Pageable pageable
     ) {
-        var actions = customerService.findCustomerActions(id, predicate, pageable);
+        var actions = customerService.findCustomerActions(predicate, pageable);
         return mapper.mapPage(actions, CustomerActionDto.class, pageable);
     }
 }
